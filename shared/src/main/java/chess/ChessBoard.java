@@ -11,7 +11,7 @@ import java.util.Arrays;
 public class ChessBoard {
     private ChessPiece[][] board = new ChessPiece[8][8];
     public ChessBoard() {
-        
+
     }
 
     /**
@@ -63,7 +63,7 @@ public class ChessBoard {
 
         // black pawns
         for (int col = 0; col < 8; col++) {
-            board[6][col] = new ChessPiece(ChessGame.TeamColor.WHITE, ChessPiece.PieceType.PAWN);
+            board[6][col] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.PAWN);
         }
 
         // black pieces
@@ -75,6 +75,13 @@ public class ChessBoard {
         board[7][5] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.BISHOP);
         board[7][6] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.KNIGHT);
         board[7][7] = new ChessPiece(ChessGame.TeamColor.BLACK, ChessPiece.PieceType.ROOK);
+    }
+
+    @Override
+    public String toString() {
+        return "ChessBoard{" +
+                "board=" + Arrays.toString(board) +
+                '}';
     }
 
     @Override
@@ -92,12 +99,5 @@ public class ChessBoard {
     @Override
     public int hashCode() {
         return Arrays.deepHashCode(board);
-    }
-
-    @Override
-    public String toString() {
-        return "ChessBoard{" +
-                "board=" + Arrays.toString(board) +
-                '}';
     }
 }
