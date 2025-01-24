@@ -141,4 +141,31 @@ public class ChessPiece {
         };
         addMoves(board, myPosition, moves, queenMoves);
     }
+
+    private void pawnMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves) {
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+
+        int direction = this.pieceColor == ChessGame.TeamColor.WHITE ? 1 : -1;
+        int startRow = this.pieceColor == ChessGame.TeamColor.WHITE ? 2 : 7;
+        int promotionRow = this.pieceColor == ChessGame.TeamColor.WHITE ? 8 : 1;
+
+        int forward = row + direction;
+        ChessPosition forwardPosition = new ChessPosition(forward, col);
+        if (validPosition(forward, col) && board.getPiece(forwardPosition) == null) {
+            if (forward == promotionRow) {
+                // promotion here
+            } else {
+                moves.add(new ChessMove(myPosition, forwardPosition, null));
+            }
+
+            if (row == startRow) {
+                int doubleForward = row + 2 * direction;
+                ChessPosition doubleForwardPosition = new ChessPosition(doubleForward, col);
+                if (board.getPiece(doubleForwardPosition) == null) {
+                    moves.add(new ChessMove(myPosition, doubleForwardPosition, null));
+                }
+            }
+        }
+    }
 }
