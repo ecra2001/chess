@@ -54,24 +54,72 @@ public class ChessPiece {
         Collection<ChessMove> moves = new ArrayList<>();
         switch (this.type) {
             case KING:
-                //king moves
+                kingMoves(board, myPosition, moves);
                 break;
             case QUEEN:
                 //queen moves
                 break;
             case KNIGHT:
-                //kight moves
+                knightMoves(board, myPosition, moves);
                 break;
             case BISHOP:
-                //bishop moves
+                bishopMoves(board, myPosition, moves);
                 break;
             case ROOK:
-                //rook moves
+                rookMoves(board, myPosition, moves);
                 break;
             case PAWN:
                 //pawn moves
                 break;
         }
         return moves;
+    }
+
+    private boolean validPosition(int row, int col) {
+        return row >= 1 && row < 9 && col >= 1 && col < 9;
+    }
+
+    private void addMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves, int[][] moveList) {
+        int row = myPosition.getRow();
+        int col = myPosition.getColumn();
+        for (int[] set : moveList) {
+            int newRow = row + set[0];
+            int newCol = col + set[1];
+            if (validPosition(newRow, newCol)) {
+                ChessPosition newPosition = new ChessPosition(newRow, newCol);
+                ChessPiece destination = board.getPiece(newPosition);
+                if (destination == null || destination.getTeamColor() != this.pieceColor) {
+                    moves.add(new ChessMove(myPosition, newPosition, null));
+                }
+            }
+        }
+    }
+
+    private void kingMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves) {
+        int[][] kingMoves = {
+                {1, 0}, {-1, 0}, {0, 1}, {0, -1}, {1, 1}, {-1, -1}, {1, -1}, {-1, 1}
+        };
+        addMoves(board, myPosition, moves, kingMoves);
+    }
+
+    private void knightMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves) {
+        int[][] knightMoves = {
+                {2, 1}, {2, -1}, {-2, 1}, {-2, -1}, {1, 2}, {1, -2}, {-1, 2}, {-1, -2}
+        };
+        addMoves(board, myPosition, moves, knightMoves);
+    }
+
+    private void rookMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves) {
+        int[][] knightMoves = {
+                {1, 0}, {0, 1}, {-1, 0}, {0, -1}
+        };
+        addMoves(board, myPosition, moves, knightMoves);
+    }
+
+    private void bishopMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves) {
+        int[][] knightMoves = {
+                {1, 1}, {1, -1}, {-1, 1}, {-1, -1}
+        };
+        addMoves(board, myPosition, moves, knightMoves);
     }
 }
