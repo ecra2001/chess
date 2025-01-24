@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 /**
@@ -9,8 +10,8 @@ import java.util.Collection;
  * signature of the existing methods.
  */
 public class ChessPiece {
-    private ChessGame.TeamColor pieceColor;
-    private ChessPiece.PieceType type;
+    private final ChessGame.TeamColor pieceColor;
+    private final ChessPiece.PieceType type;
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.pieceColor = pieceColor;
         this.type = type;
@@ -50,6 +51,27 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        Collection<ChessMove> moves = new ArrayList<>();
+        switch (this.type) {
+            case KING:
+                //king moves
+                break;
+            case QUEEN:
+                //queen moves
+                break;
+            case KNIGHT:
+                //kight moves
+                break;
+            case BISHOP:
+                //bishop moves
+                break;
+            case ROOK:
+                //rook moves
+                break;
+            case PAWN:
+                //pawn moves
+                break;
+        }
+        return moves;
     }
 }
