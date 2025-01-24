@@ -161,11 +161,8 @@ public class ChessPiece {
     }
 
     private void queenMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves) {
-        int[][] queenMoves = {
-                {1, 0}, {-1, 0}, {0, 1}, {0, -1},
-                {1, 1}, {-1, -1}, {1, -1}, {-1, 1}
-        };
-        addMoves(board, myPosition, moves, queenMoves);
+        rookMoves(board, myPosition, moves);
+        bishopMoves(board, myPosition, moves);
     }
 
     private void pawnMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves) {
