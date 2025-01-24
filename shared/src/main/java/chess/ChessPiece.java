@@ -167,5 +167,21 @@ public class ChessPiece {
                 }
             }
         }
+        int[][] pawnCaptureMoves = {{direction, -1}, {direction, 1}};
+        for (int[] dir : pawnCaptureMoves) {
+            int newRow = row + dir[0];
+            int newCol = col + dir[1];
+            if (validPosition(newRow, newCol)) {
+                ChessPosition capturePosition = new ChessPosition(newRow, newCol);
+                ChessPiece destination = board.getPiece(capturePosition);
+                if (destination != null && destination.getTeamColor() != this.pieceColor) {
+                    if (newRow == promotionRow) {
+                        // promotion here
+                    } else {
+                        moves.add(new ChessMove(myPosition, capturePosition, null));
+                    }
+                }
+            }
+        }
     }
 }
