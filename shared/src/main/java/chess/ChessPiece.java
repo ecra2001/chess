@@ -57,7 +57,7 @@ public class ChessPiece {
                 kingMoves(board, myPosition, moves);
                 break;
             case QUEEN:
-                //queen moves
+                queenMoves(board, myPosition, moves);
                 break;
             case KNIGHT:
                 knightMoves(board, myPosition, moves);
@@ -82,15 +82,26 @@ public class ChessPiece {
     private void addMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves, int[][] moveList) {
         int row = myPosition.getRow();
         int col = myPosition.getColumn();
-        for (int[] set : moveList) {
-            int newRow = row + set[0];
-            int newCol = col + set[1];
-            if (validPosition(newRow, newCol)) {
+        boolean singleStep = this.type == PieceType.KING || this.type == PieceType.KNIGHT;
+        for (int[] direction : moveList) {
+            int newRow = row + direction[0];
+            int newCol = col + direction[1];
+            while (validPosition(newRow, newCol)) {
                 ChessPosition newPosition = new ChessPosition(newRow, newCol);
                 ChessPiece destination = board.getPiece(newPosition);
-                if (destination == null || destination.getTeamColor() != this.pieceColor) {
+                if (destination == null) {
                     moves.add(new ChessMove(myPosition, newPosition, null));
+                } else {
+                    if (destination.getTeamColor() != this.pieceColor) {
+                        moves.add(new ChessMove(myPosition, newPosition, null));
+                    }
+                    break;
                 }
+                if (singleStep) {
+                    break;
+                }
+                newRow += direction[0];
+                newCol += direction[1];
             }
         }
     }
@@ -121,5 +132,13 @@ public class ChessPiece {
                 {1, 1}, {1, -1}, {-1, 1}, {-1, -1}
         };
         addMoves(board, myPosition, moves, knightMoves);
+    }
+
+    private void queenMoves(ChessBoard board, ChessPosition myPosition, Collection<ChessMove> moves) {
+        int[][] queenMoves = {
+                {1, 0}, {-1, 0}, {0, 1}, {0, -1},
+                {1, 1}, {-1, -1}, {1, -1}, {-1, 1}
+        };
+        addMoves(board, myPosition, moves, queenMoves);
     }
 }
