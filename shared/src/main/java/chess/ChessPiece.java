@@ -69,7 +69,7 @@ public class ChessPiece {
                 rookMoves(board, myPosition, moves);
                 break;
             case PAWN:
-                //pawn moves
+                pawnMoves(board, myPosition, moves);
                 break;
         }
         return moves;
@@ -154,7 +154,7 @@ public class ChessPiece {
         ChessPosition forwardPosition = new ChessPosition(forward, col);
         if (validPosition(forward, col) && board.getPiece(forwardPosition) == null) {
             if (forward == promotionRow) {
-                // promotion here
+                promotionMoves(myPosition, forwardPosition, moves);
             } else {
                 moves.add(new ChessMove(myPosition, forwardPosition, null));
             }
@@ -176,12 +176,18 @@ public class ChessPiece {
                 ChessPiece destination = board.getPiece(capturePosition);
                 if (destination != null && destination.getTeamColor() != this.pieceColor) {
                     if (newRow == promotionRow) {
-                        // promotion here
+                        promotionMoves(myPosition, capturePosition, moves);
                     } else {
                         moves.add(new ChessMove(myPosition, capturePosition, null));
                     }
                 }
             }
         }
+    }
+    private void promotionMoves(ChessPosition from, ChessPosition to, Collection<ChessMove> moves) {
+        moves.add(new ChessMove(from, to, PieceType.QUEEN));
+        moves.add(new ChessMove(from, to, PieceType.ROOK));
+        moves.add(new ChessMove(from, to, PieceType.BISHOP));
+        moves.add(new ChessMove(from, to, PieceType.KNIGHT));
     }
 }
