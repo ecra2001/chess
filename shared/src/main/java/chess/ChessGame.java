@@ -124,13 +124,20 @@ public class ChessGame {
             for (int c = 1; c <= 8; c++) {
                 ChessPiece piece = board.getPiece(new ChessPosition(r, c));
                 if (piece != null && piece.getTeamColor() != teamColor) {
-                    Collection<ChessMove> moves = piece.pieceMoves(board, new ChessPosition(r, c));
-                    for (ChessMove move : moves) {
-                        if (move.getEndPosition().equals(kingPosition)) {
-                            return true;
-                        }
+                    if (canAttackKing(piece, new ChessPosition(r, c), kingPosition)) {
+                        return true;
                     }
                 }
+            }
+        }
+        return false;
+    }
+
+    private boolean canAttackKing(ChessPiece piece, ChessPosition position, ChessPosition kingPosition) {
+        Collection<ChessMove> moves = piece.pieceMoves(board, position);
+        for (ChessMove move : moves) {
+            if (move.getEndPosition().equals(kingPosition)) {
+                return true;
             }
         }
         return false;
