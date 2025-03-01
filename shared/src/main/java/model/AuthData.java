@@ -1,6 +1,6 @@
 package model;
 
-class AuthData {
+public class AuthData {
     private final String authToken;
 
     AuthData(String username, String authToken) {

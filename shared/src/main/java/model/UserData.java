@@ -1,6 +1,6 @@
 package model;
 
-class UserData {
+public class UserData {
     private final String username;
 
     UserData(String username, String password, String email) {
