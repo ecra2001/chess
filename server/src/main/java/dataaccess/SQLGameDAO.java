@@ -24,8 +24,7 @@ public class SQLGameDAO implements GameDAO {
                 String blackUsername = rs.getString("blackUsername");
                 String gameName = rs.getString("gameName");
 
-                // Assuming you have a way to retrieve ChessGame objects based on gameID
-                ChessGame game = retrieveGameData(gameID); // This is a placeholder
+                ChessGame game = retrieveGameData(gameID);
                 games.add(new GameData(gameID, whiteUsername, blackUsername, gameName, game));
             }
         } catch (SQLException e) {
@@ -42,7 +41,7 @@ public class SQLGameDAO implements GameDAO {
             stmt.setString(2, game.getWhiteUsername());
             stmt.setString(3, game.getBlackUsername());
             stmt.setString(4, game.getGameName());
-            stmt.setObject(5, game.getGame()); // Assuming game is serialized or stored as a BLOB
+            stmt.setObject(5, game.getGame());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new DataAccessException("Error adding game.", e);
@@ -76,7 +75,7 @@ public class SQLGameDAO implements GameDAO {
             stmt.setString(1, game.getWhiteUsername());
             stmt.setString(2, game.getBlackUsername());
             stmt.setString(3, game.getGameName());
-            stmt.setObject(4, game.getGame()); // Assuming game is serialized or stored as a BLOB
+            stmt.setObject(4, game.getGame());
             stmt.setInt(5, game.getGameID());
             int rowsUpdated = stmt.executeUpdate();
             if (rowsUpdated == 0) {
@@ -109,9 +108,10 @@ public class SQLGameDAO implements GameDAO {
         }
     }
 
-    // Placeholder method for retrieving game data (game object should be stored/serialized in the database)
     private ChessGame retrieveGameData(int gameID) {
-        // Implement logic to retrieve ChessGame by gameID (e.g., deserialize the game data from BLOB)
-        return new ChessGame(); // Replace with actual deserialization logic
+        // Implement logic to retrieve ChessGame by gameID
+        return new ChessGame();
     }
+
+    //need to make serialize and deserialize
 }
