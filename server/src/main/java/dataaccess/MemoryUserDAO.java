@@ -17,10 +17,19 @@ public class MemoryUserDAO implements UserDAO {
 
     @Override
     public UserData getUser(String username) throws DataAccessException {
+        if (!db.containsKey(username)) {
+            throw new DataAccessException("User not found.");
+        }
+        return db.get(username);
     }
 
     @Override
     public boolean authUser(String username, String password) throws DataAccessException {
+        UserData user = db.get(username);
+        if (user == null) {
+            throw new DataAccessException("User does not exist.");
+        }
+        return user.getPassword().equals(password);
     }
 
     @Override
