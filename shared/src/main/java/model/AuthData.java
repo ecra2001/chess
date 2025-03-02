@@ -3,7 +3,7 @@ package model;
 public class AuthData {
     private final String authToken;
 
-    AuthData(String username, String authToken) {
+    public AuthData(String username, String authToken) {
         this.authToken = authToken;
     }
 

@@ -4,7 +4,7 @@ import model.AuthData;
 
 public interface AuthDAO {
     AuthData getAuth(String authToken) throws DataAccessException;
-    void createAuth(AuthData authData);
-    void deleteAuth(String authToken);
-    void clear();
+    void createAuth(AuthData authData) throws DataAccessException;
+    void deleteAuth(String authToken) throws DataAccessException;
+    void clear() throws DataAccessException;
 }
