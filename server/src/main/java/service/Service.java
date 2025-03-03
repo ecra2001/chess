@@ -40,7 +40,7 @@ public class Service {
             try {
                 userAuthenticated = userDAO.authUser(userData.getUsername(), userData.getPassword());
             } catch (DataAccessException e) {
-                throw new DataAccessException("Error login in");
+                throw new DataAccessException("Error logging in");
             }
 
             if (userAuthenticated) {
@@ -50,7 +50,7 @@ public class Service {
                 return authData;
             }
             else {
-                throw new DataAccessException("Error creating AuthData");
+                throw new DataAccessException("Error logging in: Failed to create AuthData");
             }
         }
 
