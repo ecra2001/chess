@@ -20,9 +20,54 @@ public class Service {
             this.userDAO = userDAO;
             this.authDAO = authDAO;
         }
+
+        public AuthData createUser(UserData userData) throws DataAccessException {
+            return null;
+        }
+
+        public AuthData loginUser(UserData userData) throws DataAccessException {
+            return null;
+        }
+
+        public void logoutUser(String authToken) throws DataAccessException {
+
+        }
+
+
+        public void clear() {
+
+        }
     }
 
     public static class GameService {
+        GameDAO gameDAO;
+        AuthDAO authDAO;
+        public GameService(GameDAO gameDAO, AuthDAO authDAO){
+            this.gameDAO = gameDAO;
+            this.authDAO = authDAO;
+        }
+        public HashSet<GameData> listGames(String authToken) throws DataAccessException {
+            return null;
+        }
 
+        public int createGame(String authToken) throws DataAccessException {
+            return 0;
+        }
+
+        /***
+         * Returns an int based on successfulness of joining the game.
+         *     0 = Success
+         *     1 = Game does not exist or other bad request
+         *     2 = Player color already taken
+         *     Throws UnauthorizedException if invalid authToken
+         *     Throws DataAccessException if the request is bad
+         */
+        public int joinGame(String authToken, int gameID, String color) throws  DataAccessException {
+            return 0;
+        }
+
+        public static void clear(GameDAO gameDAO) {
+
+        }
     }
 }
