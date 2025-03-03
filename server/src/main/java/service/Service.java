@@ -12,6 +12,7 @@ import model.GameData;
 import model.UserData;
 import java.util.HashSet;
 import java.util.UUID;
+import java.util.concurrent.ThreadLocalRandom;
 
 public class Service {
     public static class UserService {
@@ -76,21 +77,37 @@ public class Service {
             this.authDAO = authDAO;
         }
         public HashSet<GameData> listGames(String authToken) throws DataAccessException {
-            return null;
+            try {
+                authDAO.getAuth(authToken);
+            } catch (DataAccessException e) {
+                throw new DataAccessException("Error getting game list");
+            }
+            return gameDAO.listGames();
         }
 
-        public int createGame(String authToken) throws DataAccessException {
-            return 0;
+        public int createGame(String authToken, String gameName) throws DataAccessException {
+            try {
+                authDAO.getAuth(authToken);
+            } catch (DataAccessException e) {
+                throw new DataAccessException("Error creating game: not authorized");
+            }
+
+            int gameID;
+            do {
+                gameID = ThreadLocalRandom.current().nextInt(1, 10000);
+            } while (gameDAO.gameExists(gameID));
+            try {
+                ChessBoard board = new ChessBoard();
+                ChessGame game = new ChessGame();
+                board.resetBoard();
+                game.setBoard(board);
+                gameDAO.addGame(new GameData(gameID, null, null, gameName, null));
+            } catch (DataAccessException e) {
+                throw new DataAccessException("Error creating game");
+            }
+            return gameID;
         }
 
-        /***
-         * Returns an int based on successfulness of joining the game.
-         *     0 = Success
-         *     1 = Game does not exist or other bad request
-         *     2 = Player color already taken
-         *     Throws UnauthorizedException if invalid authToken
-         *     Throws DataAccessException if the request is bad
-         */
         public int joinGame(String authToken, int gameID, String color) throws  DataAccessException {
             return 0;
         }
