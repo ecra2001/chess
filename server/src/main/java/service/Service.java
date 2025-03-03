@@ -35,11 +35,31 @@ public class Service {
         }
 
         public AuthData loginUser(UserData userData) throws DataAccessException {
-            return null;
+            boolean userAuthenticated;
+            try {
+                userAuthenticated = userDAO.authUser(userData.getUsername(), userData.getPassword());
+            } catch (DataAccessException e) {
+                throw new DataAccessException("Error login in");
+            }
+
+            if (userAuthenticated) {
+                String authToken = UUID.randomUUID().toString();
+                AuthData authData = new AuthData(userData.getUsername(), authToken);
+                authDAO.createAuth(authData);
+                return authData;
+            }
+            else {
+                throw new DataAccessException("Error creating AuthData");
+            }
         }
 
         public void logoutUser(String authToken) throws DataAccessException {
-
+            try {
+                authDAO.getAuth(authToken);
+            } catch (DataAccessException e) {
+                throw new DataAccessException("Error logging out");
+            }
+            authDAO.deleteAuth(authToken);
         }
 
 
