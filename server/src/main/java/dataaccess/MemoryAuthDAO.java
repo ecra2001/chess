@@ -8,11 +8,11 @@ public class MemoryAuthDAO implements AuthDAO {
     private final Map<String, AuthData> db = new HashMap<>();
 
     @Override
-    public void getAuth(String authToken) throws DataAccessException {
+    public AuthData getAuth(String authToken) throws DataAccessException {
         if (!db.containsKey(authToken)) {
             throw new DataAccessException("Auth token not found");
         }
-        db.get(authToken);
+        return db.get(authToken);
     }
 
     @Override

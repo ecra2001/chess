@@ -5,7 +5,8 @@ import model.AuthData;
 public class SQLAuthDAO implements AuthDAO {
 
     @Override
-    public void getAuth(String authToken) throws DataAccessException {
+    public AuthData getAuth(String authToken) throws DataAccessException {
+        return null;
     }
 
     @Override

@@ -64,8 +64,13 @@ public class Service {
         }
 
 
-        public void clear() {
-
+        public void clear() throws DataAccessException {
+            try {
+                userDAO.clear();
+                authDAO.clear();
+            } catch (DataAccessException e) {
+                throw new DataAccessException("Error clearing User Data");
+            }
         }
     }
 
@@ -108,12 +113,52 @@ public class Service {
             return gameID;
         }
 
-        public int joinGame(String authToken, int gameID, String color) throws  DataAccessException {
-            return 0;
+        public boolean joinGame(String authToken, int gameID, String color) throws  DataAccessException {
+            AuthData authData;
+            GameData gameData;
+            try {
+                authData = authDAO.getAuth(authToken);
+            } catch (DataAccessException e) {
+                throw new DataAccessException("Error joining game: not authorized");
+            }
+            try {
+                gameData = gameDAO.getGame(gameID);
+            } catch (DataAccessException e) {
+                throw new DataAccessException("Error joining game: failed to retrieve game");
+            }
+
+            String whiteUser = gameData.getWhiteUsername();
+            String blackUser = gameData.getBlackUsername();
+
+            if (!color.matches("(?i)white|black")) {
+                throw new DataAccessException("Error joining game: invalid color");
+            }
+            if (color.matches("(?i)white")) {
+                if (whiteUser != null) {
+                    return false;
+                }
+                whiteUser = authData.getUsername();
+            } else if ("BLACK".equalsIgnoreCase(color)) {
+                if (blackUser != null) {
+                    return false;
+                }
+                blackUser = authData.getUsername();
+            }
+
+            try {
+                gameDAO.updateGame(new GameData(gameID, whiteUser, blackUser, gameData.getGameName(), gameData.getGame()));
+            } catch (DataAccessException e) {
+                throw new DataAccessException("Error joining game");
+            }
+            return true;
         }
 
-        public static void clear(GameDAO gameDAO) {
-
+        public static void clear(GameDAO gameDAO) throws DataAccessException{
+            try {
+                gameDAO.clear();
+            } catch (DataAccessException e) {
+                throw new DataAccessException("Error clearing Game Data");
+            }
         }
     }
 }
