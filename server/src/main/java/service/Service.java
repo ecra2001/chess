@@ -11,6 +11,7 @@ import model.AuthData;
 import model.GameData;
 import model.UserData;
 import java.util.HashSet;
+import java.util.UUID;
 
 public class Service {
     public static class UserService {
@@ -22,7 +23,15 @@ public class Service {
         }
 
         public AuthData createUser(UserData userData) throws DataAccessException {
-            return null;
+            try {
+                userDAO.createUser(userData);
+            } catch (DataAccessException e) {
+                throw new DataAccessException("Error making user.");
+            }
+            String authToken = UUID.randomUUID().toString();
+            AuthData authData = new AuthData(userData.getUsername(), authToken);
+            authDAO.createAuth(authData);
+            return authData;
         }
 
         public AuthData loginUser(UserData userData) throws DataAccessException {
