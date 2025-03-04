@@ -35,6 +35,8 @@ public class ServiceTest {
     void setup() throws DataAccessException {
         defaultUser = new UserData("Username", "password", "email");
         gameDAO.clear();
+        userDAO.clear();
+        authDAO.clear();
     }
     @Test
     void testCreateUserPositive() throws DataAccessException {
@@ -48,11 +50,19 @@ public class ServiceTest {
     }
     @Test
     void testLoginUserPositive() throws DataAccessException {
-
+        userService.createUser(defaultUser);
+        AuthData auth = userService.loginUser(defaultUser);
+        Assertions.assertEquals(authDAO.getAuth(auth.getAuthToken()), auth);
     }
     @Test
-    void testLoginUserNegative() throws DataAccessException {
-
+    void testLoginUserNotExist() throws DataAccessException{
+        Assertions.assertThrows(DataAccessException.class, () -> userService.loginUser(defaultUser));
+    }
+    @Test
+    void testLoginUserBadPassword() throws DataAccessException {
+        userService.createUser(defaultUser);
+        UserData badPassUser = new UserData(defaultUser.getUsername(), "badPassword", defaultUser.getEmail());
+        Assertions.assertThrows(DataAccessException.class, () -> userService.loginUser(badPassUser));
     }
     @Test
     void testLogoutUserPositive() throws DataAccessException {
