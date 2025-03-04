@@ -38,11 +38,13 @@ public class ServiceTest {
     }
     @Test
     void testCreateUserPositive() throws DataAccessException {
-
+        AuthData auth = userService.createUser(defaultUser);
+        Assertions.assertEquals(authDAO.getAuth(auth.getAuthToken()), auth);
     }
     @Test
     void testCreateUserNegative() throws DataAccessException {
-
+        userService.createUser(defaultUser);
+        Assertions.assertThrows(DataAccessException.class, () -> userService.createUser(defaultUser));
     }
     @Test
     void testLoginUserPositive() throws DataAccessException {
