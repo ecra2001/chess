@@ -27,15 +27,15 @@ public class ServiceTest {
         gameDAO = new MemoryGameDAO();
         gameService = new Service.GameService(gameDAO, authDAO);
         userService = new Service.UserService(userDAO, authDAO);
-        authData = new AuthData("Username", "authToken");
-        authDAO.createAuth(authData);
     }
     @BeforeEach
     void setup() throws DataAccessException {
-        defaultUser = new UserData("Username", "password", "email");
         gameDAO.clear();
         userDAO.clear();
         //authDAO.clear();
+        defaultUser = new UserData("Username", "password", "email");
+        authData = new AuthData("Username", "authToken");
+        authDAO.createAuth(authData);
     }
     @Test
     void testCreateUserPositive() throws DataAccessException {
@@ -73,16 +73,6 @@ public class ServiceTest {
     void testLogoutUserNegative() throws DataAccessException {
         AuthData auth = userService.createUser(defaultUser);
         Assertions.assertThrows(DataAccessException.class, () -> userService.logoutUser("badAuthToken"));
-    }
-    @Test
-    void testClear() throws DataAccessException {
-        AuthData auth = userService.createUser(defaultUser);
-        gameService.createGame(authData.getAuthToken(), "name");
-        userService.clear();
-        Service.GameService.clear(gameDAO);
-        Assertions.assertThrows(DataAccessException.class, () -> userDAO.getUser(defaultUser.getUsername()));
-        Assertions.assertThrows(DataAccessException.class, () -> authDAO.getAuth(auth.getAuthToken()));
-        Assertions.assertEquals(gameDAO.listGames(), HashSet.newHashSet(0));
     }
     @Test
     void testListGamesPositive() throws DataAccessException {
@@ -124,5 +114,15 @@ public class ServiceTest {
         Assertions.assertThrows(DataAccessException.class, () -> gameService.joinGame(authData.getAuthToken(), diffGameId, "WHITE"));
         Assertions.assertThrows(DataAccessException.class, () -> gameService.joinGame("diffAuth", game, "WHITE"));
         Assertions.assertThrows(DataAccessException.class, () -> gameService.joinGame(authData.getAuthToken(), game, "BLUE"));
+    }
+    @Test
+    void testClear() throws DataAccessException {
+        AuthData auth = userService.createUser(defaultUser);
+        gameService.createGame(authData.getAuthToken(), "name");
+        userService.clear();
+        Service.GameService.clear(gameDAO);
+        Assertions.assertThrows(DataAccessException.class, () -> userDAO.getUser(defaultUser.getUsername()));
+        Assertions.assertThrows(DataAccessException.class, () -> authDAO.getAuth(auth.getAuthToken()));
+        Assertions.assertEquals(gameDAO.listGames(), HashSet.newHashSet(0));
     }
 }
