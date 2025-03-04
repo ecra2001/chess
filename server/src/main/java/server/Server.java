@@ -64,15 +64,57 @@ public class Server {
     }
 
     public Object register(Request req, Response resp) throws DataAccessException {
-        return null;
+        try {
+            UserData userData = gson.fromJson(req.body(), UserData.class);
+            if (userData.getUsername() == null || userData.getPassword() == null || userData.getEmail() == null) {
+                resp.status(400);
+                return gson.toJson(Map.of("message", "Error: bad request"));
+            }
+
+            AuthData authData = userService.createUser(userData);
+            resp.status(200);
+            return gson.toJson(Map.of("username", authData.getUsername(), "authToken", authData.getAuthToken()));
+        } catch (DataAccessException e) {
+            resp.status(403);
+            return gson.toJson(Map.of("message", "Error: already taken"));
+        } catch (Exception e) {
+            resp.status(500);
+            return gson.toJson(Map.of("message", "Error: " + e.getMessage()));
+        }
     }
 
     public Object login(Request req, Response resp) throws DataAccessException {
-        return null;
+        try {
+            UserData userData = gson.fromJson(req.body(), UserData.class);
+            AuthData authData = userService.loginUser(userData);
+            resp.status(200);
+            return gson.toJson(Map.of("username", authData.getUsername(), "authToken", authData.getAuthToken()));
+        } catch (DataAccessException e) {
+            resp.status(401);
+            return gson.toJson(Map.of("message", "Error: unauthorized"));
+        } catch (Exception e) {
+            resp.status(500);
+            return gson.toJson(Map.of("message", "Error: " + e.getMessage()));
+        }
     }
 
     public Object logout(Request req, Response resp) throws DataAccessException {
-        return null;
+        try {
+            String authToken = req.headers("Authorization");
+            if (authToken == null) {
+                resp.status(401);
+                return gson.toJson(Map.of("message", "Error: unauthorized"));
+            }
+            userService.logoutUser(authToken);
+            resp.status(200);
+            return "{}";
+        } catch (DataAccessException e) {
+            resp.status(401);
+            return gson.toJson(Map.of("message", "Error: unauthorized"));
+        } catch (Exception e) {
+            resp.status(500);
+            return gson.toJson(Map.of("message", "Error: " + e.getMessage()));
+        }
     }
 
     public Object listGames(Request req, Response resp) throws DataAccessException {
