@@ -19,7 +19,6 @@ public class Server {
     GameDAO gameDAO;
     static Service.UserService userService;
     static Service.GameService gameService;
-    private final Gson gson = new Gson();
 
     public Server() {
         userDAO = new MemoryUserDAO();
@@ -65,36 +64,38 @@ public class Server {
 
     public Object register(Request req, Response resp) throws DataAccessException {
         try {
-            UserData userData = gson.fromJson(req.body(), UserData.class);
+            UserData userData = new Gson().fromJson(req.body(), UserData.class);
             if (userData.getUsername() == null || userData.getPassword() == null || userData.getEmail() == null) {
                 resp.status(400);
-                return gson.toJson(Map.of("message", "Error: bad request"));
+                return "{ \"message\": \"Error: bad request\" }";
             }
 
             AuthData authData = userService.createUser(userData);
             resp.status(200);
-            return gson.toJson(Map.of("username", authData.getUsername(), "authToken", authData.getAuthToken()));
+            return "{ \"username\":\"" + authData.getUsername() + "\", \"authToken\":\""
+                    + authData.getAuthToken() + "\" }";
         } catch (DataAccessException e) {
             resp.status(403);
-            return gson.toJson(Map.of("message", "Error: already taken"));
+            return "{ \"message\": \"Error: already taken\" }";
         } catch (Exception e) {
             resp.status(500);
-            return gson.toJson(Map.of("message", "Error: " + e.getMessage()));
+            return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
         }
     }
 
     public Object login(Request req, Response resp) throws DataAccessException {
         try {
-            UserData userData = gson.fromJson(req.body(), UserData.class);
+            UserData userData = new Gson().fromJson(req.body(), UserData.class);
             AuthData authData = userService.loginUser(userData);
             resp.status(200);
-            return gson.toJson(Map.of("username", authData.getUsername(), "authToken", authData.getAuthToken()));
+            return "{ \"username\":\"" + authData.getUsername() + "\", \"authToken\":\""
+                    + authData.getAuthToken() + "\" }";
         } catch (DataAccessException e) {
             resp.status(401);
-            return gson.toJson(Map.of("message", "Error: unauthorized"));
+            return "{ \"message\": \"Error: unauthorized\" }";
         } catch (Exception e) {
             resp.status(500);
-            return gson.toJson(Map.of("message", "Error: " + e.getMessage()));
+            return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
         }
     }
 
@@ -103,17 +104,17 @@ public class Server {
             String authToken = req.headers("Authorization");
             if (authToken == null) {
                 resp.status(401);
-                return gson.toJson(Map.of("message", "Error: unauthorized"));
+                return "{ \"message\": \"Error: unauthorized\" }";
             }
             userService.logoutUser(authToken);
             resp.status(200);
             return "{}";
         } catch (DataAccessException e) {
             resp.status(401);
-            return gson.toJson(Map.of("message", "Error: unauthorized"));
+            return "{ \"message\": \"Error: unauthorized\" }";
         } catch (Exception e) {
             resp.status(500);
-            return gson.toJson(Map.of("message", "Error: " + e.getMessage()));
+            return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
         }
     }
 
@@ -122,18 +123,18 @@ public class Server {
             String authToken = req.headers("Authorization");
             if (authToken == null) {
                 resp.status(401);
-                return gson.toJson(Map.of("message", "Error: unauthorized"));
+                return "{ \"message\": \"Error: unauthorized\" }";
             }
 
             HashSet<GameData> games = gameService.listGames(authToken);
             resp.status(200);
-            return gson.toJson(Map.of("games", games));
+            return new Gson().toJson(Map.of("games", games));
         } catch (DataAccessException e) {
             resp.status(401);
-            return gson.toJson(Map.of("message", "Error: unauthorized"));
+            return "{ \"message\": \"Error: unauthorized\" }";
         } catch (Exception e) {
             resp.status(500);
-            return gson.toJson(Map.of("message", "Error: " + e.getMessage()));
+            return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
         }
     }
 
@@ -142,21 +143,21 @@ public class Server {
             String authToken = req.headers("Authorization");
             if (authToken == null || !authDAO.authTokenExists(authToken)) {
                 resp.status(401);
-                return gson.toJson(Map.of("message", "Error: unauthorized"));
+                return "{ \"message\": \"Error: unauthorized\" }";
             }
 
-            Map<String, String> body = gson.fromJson(req.body(), Map.class);
+            Map<String, String> body = new Gson().fromJson(req.body(), Map.class);
             if (body == null || !body.containsKey("gameName")) {
                 resp.status(400);
-                return gson.toJson(Map.of("message", "Error: bad request"));
+                return "{ \"message\": \"Error: unauthorized\" }";
             }
 
             int gameID = gameService.createGame(authToken, body.get("gameName"));
             resp.status(200);
-            return gson.toJson(Map.of("gameID", gameID));
+            return "{ \"gameID\": " + gameID + " }";
         } catch (DataAccessException e) {
             resp.status(500);
-            return gson.toJson(Map.of("message", "Error: " + e.getMessage()));
+            return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
         }
     }
 
@@ -165,13 +166,13 @@ public class Server {
             String authToken = req.headers("Authorization");
             if (authToken == null || !authDAO.authTokenExists(authToken)) {
                 resp.status(401);
-                return gson.toJson(Map.of("message", "Error: unauthorized"));
+                return "{ \"message\": \"Error: unauthorized\" }";
             }
 
-            Map<String, Object> body = gson.fromJson(req.body(), Map.class);
+            Map<String, Object> body = new Gson().fromJson(req.body(), Map.class);
             if (body == null || !body.containsKey("playerColor") || !body.containsKey("gameID")) {
                 resp.status(400);
-                return gson.toJson(Map.of("message", "Error: bad request"));
+                return "{ \"message\": \"Error: bad request\" }";
             }
 
             int gameID = ((Number) body.get("gameID")).intValue();
@@ -180,17 +181,17 @@ public class Server {
             boolean success = gameService.joinGame(authToken, gameID, playerColor);
             if (!success) {
                 resp.status(403);
-                return gson.toJson(Map.of("message", "Error: already taken"));
+                return "{ \"message\": \"Error: already taken\" }";
             }
 
             resp.status(200);
             return "{}";
         } catch (DataAccessException e) {
             resp.status(400);
-            return gson.toJson(Map.of("message", "Error: bad request"));
+            return "{ \"message\": \"Error: bad request\" }";
         } catch (Exception e) {
             resp.status(500);
-            return gson.toJson(Map.of("message", "Error: " + e.getMessage()));
+            return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
         }
     }
 }
