@@ -24,6 +24,11 @@ public class SQLAuthDAO implements AuthDAO {
 
     }
 
+    @Override
+    public boolean authTokenExists(String authToken) throws DataAccessException {
+        return false;
+    }
+
     private final String[] createStatements = {
             """
             CREATE TABLE if NOT EXISTS auth (
