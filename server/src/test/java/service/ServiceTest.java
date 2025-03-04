@@ -36,7 +36,7 @@ public class ServiceTest {
         defaultUser = new UserData("Username", "password", "email");
         gameDAO.clear();
         userDAO.clear();
-        authDAO.clear();
+        //authDAO.clear();
     }
     @Test
     void testCreateUserPositive() throws DataAccessException {
@@ -66,11 +66,14 @@ public class ServiceTest {
     }
     @Test
     void testLogoutUserPositive() throws DataAccessException {
-
+        AuthData auth = userService.createUser(defaultUser);
+        userService.logoutUser(auth.getAuthToken());
+        Assertions.assertThrows(DataAccessException.class, () -> authDAO.getAuth(auth.getAuthToken()));
     }
     @Test
     void testLogoutUserNegative() throws DataAccessException {
-
+        AuthData auth = userService.createUser(defaultUser);
+        Assertions.assertThrows(DataAccessException.class, () -> userService.logoutUser("badAuthToken"));
     }
     @Test
     void testClear() throws DataAccessException {
@@ -84,26 +87,43 @@ public class ServiceTest {
     }
     @Test
     void testListGamesPositive() throws DataAccessException {
-
+        int gameID1 = gameService.createGame(authData.getAuthToken(), "game1");
+        int gameID2 = gameService.createGame(authData.getAuthToken(), "game2");
+        int gameID3 = gameService.createGame(authData.getAuthToken(), "game3");
+        HashSet<GameData> gameList = HashSet.newHashSet(3);
+        gameList.add(new GameData(gameID1, null, null, "game1", null));
+        gameList.add(new GameData(gameID2, null, null, "game2", null));
+        gameList.add(new GameData(gameID3, null, null, "game3", null));
+        Assertions.assertEquals(gameList, gameService.listGames(authData.getAuthToken()));
     }
     @Test
     void testListGamesNegative() throws DataAccessException {
-
+        Assertions.assertThrows(DataAccessException.class, () -> gameService.listGames("badToken"));
     }
     @Test
     void testCreateGamePositive() throws DataAccessException {
-
+        int game1 = gameService.createGame(authData.getAuthToken(), "game1");
+        Assertions.assertTrue(gameDAO.gameExists(game1));
+        int game2 = gameService.createGame(authData.getAuthToken(), "game2");
+        Assertions.assertNotEquals(game1, game2);
     }
     @Test
     void testCreateGameNegative() throws DataAccessException {
-
+        Assertions.assertThrows(DataAccessException.class, () -> gameService.createGame("diffAuth", "game"));
     }
     @Test
     void testJoinGamePositive() throws DataAccessException {
-
+        int game = gameService.createGame(authData.getAuthToken(), "player");
+        gameService.joinGame(authData.getAuthToken(), game, "WHITE");
+        GameData testGameData = new GameData(game, authData.getUsername(), null, "player", null);
+        Assertions.assertEquals(testGameData, gameDAO.getGame(game));
     }
     @Test
     void testJoinGameNegative() throws DataAccessException {
-
+        int game = gameService.createGame(authData.getAuthToken(), "player");
+        int diffGameId = 123;
+        Assertions.assertThrows(DataAccessException.class, () -> gameService.joinGame(authData.getAuthToken(), diffGameId, "WHITE"));
+        Assertions.assertThrows(DataAccessException.class, () -> gameService.joinGame("diffAuth", game, "WHITE"));
+        Assertions.assertThrows(DataAccessException.class, () -> gameService.joinGame(authData.getAuthToken(), game, "BLUE"));
     }
 }
