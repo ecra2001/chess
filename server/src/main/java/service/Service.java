@@ -64,13 +64,9 @@ public class Service {
         }
 
 
-        public void clear() throws DataAccessException {
-            try {
-                userDAO.clear();
-                authDAO.clear();
-            } catch (DataAccessException e) {
-                throw new DataAccessException("Error clearing User Data");
-            }
+        public void clear() {
+            userDAO.clear();
+            authDAO.clear();
         }
     }
 
@@ -154,11 +150,7 @@ public class Service {
         }
 
         public static void clear(GameDAO gameDAO) throws DataAccessException{
-            try {
-                gameDAO.clear();
-            } catch (DataAccessException e) {
-                throw new DataAccessException("Error clearing Game Data");
-            }
+            gameDAO.clear();
         }
     }
 }
