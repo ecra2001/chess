@@ -6,9 +6,9 @@ public class AuthData {
     private String username;
     private String authToken;
 
-    public AuthData(String username, String authData) {
+    public AuthData(String username, String authToken) {
         this.username = username;
-        this.authToken = authData;
+        this.authToken = authToken;
     }
 
     public String getUsername(){
@@ -27,8 +27,8 @@ public class AuthData {
         if (o == null || getClass() != o.getClass()) {
             return false;
         }
-        AuthData authData1 = (AuthData) o;
-        return Objects.equals(username, authData1.username) && Objects.equals(authToken, authData1.authToken);
+        AuthData authData = (AuthData) o;
+        return Objects.equals(username, authData.username) && Objects.equals(authToken, authData.authToken);
     }
 
     @Override
