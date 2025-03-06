@@ -4,7 +4,7 @@ import chess.ChessGame;
 
 import java.util.Objects;
 
-class GameData {
+public class GameData {
     private int gameID;
     private String whiteUsername;
     private String blackUsername;

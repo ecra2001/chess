@@ -2,7 +2,7 @@ package model;
 
 import java.util.Objects;
 
-class AuthData {
+public class AuthData {
     private String username;
     private String authData;
 
