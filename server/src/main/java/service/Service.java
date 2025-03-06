@@ -4,6 +4,8 @@ import model.*;
 import java.util.UUID;
 import java.util.HashSet;
 import java.util.Random;
+import chess.ChessGame;
+import chess.ChessBoard;
 
 public class Service {
 
@@ -53,6 +55,10 @@ public class Service {
             do {
                 gameID = random.nextInt(1000) + 1;
             } while (gameDAO.gameExists(gameID));
+            ChessBoard chessBoard = new ChessBoard();
+            ChessGame chessGame = new ChessGame();
+            chessBoard.resetBoard();
+            chessGame.setBoard(chessBoard);
             GameData gameData = new GameData(gameID, null, null, gameName, null);
             gameDAO.addGame(gameData);
             return gameID;
