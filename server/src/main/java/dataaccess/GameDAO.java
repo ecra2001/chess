@@ -5,9 +5,9 @@ import java.util.HashSet;
 
 public interface GameDAO {
     HashSet<GameData> getGameList();
-    void addGame(GameData gameData);
-    GameData getGame(int gameID);
+    void addGame(GameData gameData) throws DataAccessException;
+    GameData getGame(int gameID) throws DataAccessException;
     boolean gameExists(int gameID);
-    void updateGame(GameData gameData);
+    void updateGame(GameData gameData) throws DataAccessException;
     void clear();
 }
