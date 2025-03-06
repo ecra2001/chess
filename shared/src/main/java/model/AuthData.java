@@ -4,19 +4,19 @@ import java.util.Objects;
 
 public class AuthData {
     private String username;
-    private String authData;
+    private String authToken;
 
     AuthData(String username, String authData) {
         this.username = username;
-        this.authData = authData;
+        this.authToken = authData;
     }
 
     public String getUsername(){
         return username;
     }
 
-    public String getAuthData(){
-        return authData;
+    public String getAuthToken(){
+        return authToken;
     }
 
     @Override
@@ -28,19 +28,19 @@ public class AuthData {
             return false;
         }
         AuthData authData1 = (AuthData) o;
-        return Objects.equals(username, authData1.username) && Objects.equals(authData, authData1.authData);
+        return Objects.equals(username, authData1.username) && Objects.equals(authToken, authData1.authToken);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(username, authData);
+        return Objects.hash(username, authToken);
     }
 
     @Override
     public String toString() {
         return "AuthData{" +
                 "username='" + username + '\'' +
-                ", authData='" + authData + '\'' +
+                ", authToken='" + authToken + '\'' +
                 '}';
     }
 }
