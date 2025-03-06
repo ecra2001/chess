@@ -24,12 +24,13 @@ public class MemoryUserDAO implements UserDAO {
     }
 
     @Override
-    public boolean authUser(String username, String password) {
-        return false;
+    public boolean authUser(String username, String password) throws DataAccessException {
+        UserData user = getUser(username);
+        return user.getPassword().equals(password);
     }
 
     @Override
     public void clear() {
-
+        db.clear();
     }
 }
