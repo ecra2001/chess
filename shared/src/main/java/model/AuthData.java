@@ -6,7 +6,7 @@ public class AuthData {
     private String username;
     private String authToken;
 
-    AuthData(String username, String authData) {
+    public AuthData(String username, String authData) {
         this.username = username;
         this.authToken = authData;
     }

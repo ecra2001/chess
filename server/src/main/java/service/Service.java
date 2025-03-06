@@ -8,8 +8,13 @@ public class Service {
     public static class UserService {
         UserDAO userDAO;
         AuthDAO authDAO;
-        AuthData register(UserData userData){
-            return null;
+        AuthData register(UserData userData) throws DataAccessException {
+            userDAO.createUser(userData);
+            String username = userData.getUsername();;
+            String authToken = UUID.randomUUID().toString();
+            AuthData authData = new AuthData(username, authToken);
+            authDAO.createAuth(authData);
+            return authData;
         }
         AuthData login(String username, String password){
             return null;
