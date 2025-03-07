@@ -13,8 +13,9 @@ public class ServiceTest{
     private Service.GameService gameService;
     private UserData userData;
     private AuthData authData;
-    private UserDAO userDAO;
-    private AuthDAO authDAO;
+    private UserDAO userDAO = new MemoryUserDAO();
+    private AuthDAO authDAO = new MemoryAuthDAO();
+    private GameDAO gameDAO = new MemoryGameDAO();
     @BeforeEach
     public void setup() {
         userService = new Service.UserService();
@@ -36,18 +37,28 @@ public class ServiceTest{
     }
 
     @Test
-    public void loginPositive() {
-
+    public void loginPositive() throws DataAccessException {
+        userService.register(userData);
+        AuthData mockAuthData = userService.login(userData.getUsername(), userData.getPassword());
+        Assertions.assertEquals(authData.getUsername(), mockAuthData.getUsername());
+        Assertions.assertNotNull(mockAuthData);
     }
 
     @Test
-    public void loginNegative() {
-
+    public void loginNegative() throws DataAccessException {
+        Assertions.assertThrows(DataAccessException.class, () ->
+                userService.login(userData.getUsername(), userData.getPassword()));
+        userService.register(userData);
+        UserData badUserData = new UserData("username", "wrongPass", "email");
+        Assertions.assertThrows(DataAccessException.class, () ->
+                userService.login(badUserData.getUsername(), badUserData.getPassword()));
     }
 
     @Test
-    public void logoutPositive() {
-
+    public void logoutPositive() throws DataAccessException {
+        AuthData mockAuthData = userService.register(userData);
+        userService.logout(mockAuthData.getAuthToken());
+        Assertions.assertThrows(DataAccessException.class, () -> authDAO.getAuth(mockAuthData.getAuthToken()));
     }
 
     @Test
