@@ -10,8 +10,12 @@ import chess.ChessBoard;
 public class Service {
 
     public static class UserService {
-        UserDAO userDAO = new MemoryUserDAO();
-        AuthDAO authDAO = new MemoryAuthDAO();
+        UserDAO userDAO;
+        AuthDAO authDAO;
+        public UserService(UserDAO userDAO, AuthDAO authDAO){
+            this.userDAO = userDAO;
+            this.authDAO = authDAO;
+        }
         AuthData register(UserData userData) throws DataAccessException {
             userDAO.createUser(userData);
             String username = userData.getUsername();;
@@ -31,7 +35,11 @@ public class Service {
             return authData;
         }
         void logout(String authToken) throws DataAccessException {
-            authDAO.getAuth(authToken);
+            try {
+                authDAO.getAuth(authToken);
+            } catch (DataAccessException e) {
+                throw new DataAccessException("Failed to logout");
+            }
             authDAO.removeAuth(authToken);
         }
         void clear(){
@@ -41,8 +49,12 @@ public class Service {
     }
 
     public static class GameService {
-        GameDAO gameDAO = new MemoryGameDAO();
-        AuthDAO authDAO = new MemoryAuthDAO();
+        GameDAO gameDAO;
+        AuthDAO authDAO;
+        public GameService(GameDAO gameDAO, AuthDAO authDAO) {
+            this.gameDAO = gameDAO;
+            this.authDAO = authDAO;
+        }
         HashSet<GameData> listGames(String authToken) throws DataAccessException {
             authDAO.getAuth(authToken);
             return gameDAO.getGameList();

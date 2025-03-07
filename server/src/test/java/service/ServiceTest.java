@@ -13,14 +13,17 @@ public class ServiceTest{
     private Service.GameService gameService;
     private UserData userData;
     private AuthData authData;
-    private UserDAO userDAO = new MemoryUserDAO();
-    private AuthDAO authDAO = new MemoryAuthDAO();
-    private GameDAO gameDAO = new MemoryGameDAO();
+    private GameData gameData;
+    private final UserDAO userDAO = new MemoryUserDAO();
+    private final AuthDAO authDAO = new MemoryAuthDAO();
+    private final GameDAO gameDAO = new MemoryGameDAO();
     @BeforeEach
     public void setup() {
-        userService = new Service.UserService();
+        userService = new Service.UserService(userDAO, authDAO);
+        gameService = new Service.GameService(gameDAO, authDAO);
         userData = new UserData("username", "password", "email");
         authData = new AuthData("username", "authToken");
+        authDAO.createAuth(authData);
     }
 
     @Test
@@ -62,12 +65,19 @@ public class ServiceTest{
     }
 
     @Test
-    public void logoutNegative() {
-
+    public void logoutNegative() throws DataAccessException {
+        userService.register(userData);
+        Assertions.assertThrows(DataAccessException.class, () -> userService.logout("badAuthToken"));
     }
 
     @Test
-    public void clearTest() {
+    public void clearTest() throws DataAccessException {
+        AuthData mockAuthData = userService.register(userData);
+        gameService.createGame("GameName", mockAuthData.getAuthToken());
+        userService.clear();
+        gameService.clear();
+        Assertions.assertThrows(DataAccessException.class, () -> userDAO.getUser(userData.getUsername()));
+        Assertions.assertThrows(DataAccessException.class, () -> authDAO.getAuth(mockAuthData.getAuthToken()));
 
     }
 
