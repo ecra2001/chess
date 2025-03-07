@@ -1,22 +1,37 @@
 package server;
 
+import com.google.gson.Gson;
 import spark.*;
+import dataaccess.*;
+import model.*;
+import service.Service;
 
 public class Server {
-
+    UserDAO userDAO;
+    AuthDAO authDAO;
+    GameDAO gameDAO;
+    Service.UserService userService;
+    Service.GameService gameService;
+    public Server() {
+        userDAO = new MemoryUserDAO();
+        authDAO = new MemoryAuthDAO();
+        gameDAO = new MemoryGameDAO();
+        userService = new Service.UserService(userDAO, authDAO);
+        gameService = new Service.GameService(gameDAO, authDAO);
+    }
     public int run(int desiredPort) {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-        Spark.delete("/name", this::clear);
-        Spark.post("/name", this::register);
-        Spark.post("/name", this::login);
-        Spark.delete("/name", this::logout);
-        Spark.get("/name", this::listGames);
-        Spark.post("/name", this::createGame);
-        Spark.put("/name", this::joinGame);
+        Spark.delete("/db", this::clear);
+        Spark.post("/user", this::register);
+        Spark.post("/session", this::login);
+        Spark.delete("/session", this::logout);
+        Spark.get("/game", this::listGames);
+        Spark.post("/game", this::createGame);
+        Spark.put("/game", this::joinGame);
 
         //This line initializes the server and can be removed once you have a functioning endpoint
         Spark.init();
@@ -55,6 +70,9 @@ public class Server {
     }
 
     private Object clear(Request req, Response res) {
-        return null;
+            gameService.clear();
+            userService.clear();
+            res.status(200);
+            return "{}";
     }
 }

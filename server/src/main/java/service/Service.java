@@ -16,7 +16,7 @@ public class Service {
             this.userDAO = userDAO;
             this.authDAO = authDAO;
         }
-        AuthData register(UserData userData) throws DataAccessException {
+        public AuthData register(UserData userData) throws DataAccessException {
             userDAO.createUser(userData);
             String username = userData.getUsername();;
             String authToken = UUID.randomUUID().toString();
@@ -24,7 +24,7 @@ public class Service {
             authDAO.createAuth(authData);
             return authData;
         }
-        AuthData login(String username, String password) throws DataAccessException {
+        public AuthData login(String username, String password) throws DataAccessException {
             boolean authenticate = userDAO.authUser(username, password);
             if (!authenticate) {
                 throw new DataAccessException("Incorrect password");
@@ -34,7 +34,7 @@ public class Service {
             authDAO.createAuth(authData);
             return authData;
         }
-        void logout(String authToken) throws DataAccessException {
+        public void logout(String authToken) throws DataAccessException {
             try {
                 authDAO.getAuth(authToken);
             } catch (DataAccessException e) {
@@ -42,7 +42,7 @@ public class Service {
             }
             authDAO.removeAuth(authToken);
         }
-        void clear(){
+        public void clear(){
             userDAO.clear();
             authDAO.clear();
         }
@@ -55,12 +55,12 @@ public class Service {
             this.gameDAO = gameDAO;
             this.authDAO = authDAO;
         }
-        HashSet<GameData> listGames(String authToken) throws DataAccessException {
+        public HashSet<GameData> listGames(String authToken) throws DataAccessException {
             authDAO.getAuth(authToken);
             return gameDAO.getGameList();
         }
 
-        int createGame(String gameName, String authToken) throws DataAccessException {
+        public int createGame(String gameName, String authToken) throws DataAccessException {
             authDAO.getAuth(authToken);
             Random random = new Random();
             int gameID;
@@ -76,7 +76,7 @@ public class Service {
             return gameID;
         }
 
-        boolean joinGame(String authToken, int gameID, String playerColor) throws DataAccessException {
+        public boolean joinGame(String authToken, int gameID, String playerColor) throws DataAccessException {
             AuthData authData = authDAO.getAuth(authToken);
             GameData game = gameDAO.getGame(gameID);
             String currentWhite = game.getWhiteUsername();
@@ -105,7 +105,7 @@ public class Service {
             return true;
         }
 
-        void clear() {
+        public void clear() {
             gameDAO.clear();
         }
     }
