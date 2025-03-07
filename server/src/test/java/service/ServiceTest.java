@@ -108,12 +108,21 @@ public class ServiceTest{
     }
 
     @Test
-    public void joinGamePositive() {
-
+    public void joinGamePositive() throws DataAccessException {
+        int gameID = gameService.createGame("GameName", authData.getAuthToken());
+        gameService.joinGame(authData.getAuthToken(), gameID, "WHITE");
+        GameData compareGame = new GameData(gameID, authData.getUsername(), null, "GameName", null);
+        Assertions.assertEquals(compareGame, gameDAO.getGame(gameID));
     }
 
     @Test
-    public void joinGameNegative() {
-
+    public void joinGameNegative() throws DataAccessException {
+        int gameID = gameService.createGame("GameName", authData.getAuthToken());
+        Assertions.assertThrows(DataAccessException.class, () ->
+                gameService.joinGame("badAuthToken", gameID, "WHITE"));
+        Assertions.assertThrows(DataAccessException.class, () ->
+                gameService.joinGame(authData.getAuthToken(), 0, "WHITE"));
+        Assertions.assertThrows(DataAccessException.class, () ->
+                gameService.joinGame(authData.getAuthToken(), gameID, "GREEN"));
     }
 }
