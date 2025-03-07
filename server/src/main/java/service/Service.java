@@ -10,8 +10,8 @@ import chess.ChessBoard;
 public class Service {
 
     public static class UserService {
-        UserDAO userDAO;
-        AuthDAO authDAO;
+        UserDAO userDAO = new MemoryUserDAO();
+        AuthDAO authDAO = new MemoryAuthDAO();
         AuthData register(UserData userData) throws DataAccessException {
             userDAO.createUser(userData);
             String username = userData.getUsername();;
@@ -41,8 +41,8 @@ public class Service {
     }
 
     public static class GameService {
-        GameDAO gameDAO;
-        AuthDAO authDAO;
+        GameDAO gameDAO = new MemoryGameDAO();
+        AuthDAO authDAO = new MemoryAuthDAO();
         HashSet<GameData> listGames(String authToken) throws DataAccessException {
             authDAO.getAuth(authToken);
             return gameDAO.getGameList();
