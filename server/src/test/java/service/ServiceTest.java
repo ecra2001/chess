@@ -34,4 +34,59 @@ public class ServiceTest{
         userService.register(userData);
         Assertions.assertThrows(DataAccessException.class, () -> userService.register(userData));
     }
+
+    @Test
+    public void loginPositive() {
+
+    }
+
+    @Test
+    public void loginNegative() {
+
+    }
+
+    @Test
+    public void logoutPositive() {
+
+    }
+
+    @Test
+    public void logoutNegative() {
+
+    }
+
+    @Test
+    public void clearTest() {
+
+    }
+
+    @Test
+    public void listGamesPositive() {
+
+    }
+
+    @Test
+    public void listGamesNegative() {
+
+    }
+
+    @Test
+    public void createGamePositive() {
+
+    }
+
+    @Test
+    public void createGameNegative() {
+
+    }
+
+    @Test
+    public void joinGamePositive() {
+
+    }
+
+    @Test
+    public void joinGameNegative() {
+
+    }
 }
