@@ -82,23 +82,29 @@ public class ServiceTest{
     }
 
     @Test
-    public void listGamesPositive() {
-
+    public void listGamesPositive() throws DataAccessException {
+        AuthData mockAuthData = userService.register(userData);
+        gameService.createGame("GameName", mockAuthData.getAuthToken());
+        Assertions.assertNotNull(gameService.listGames(mockAuthData.getAuthToken()));
     }
 
     @Test
     public void listGamesNegative() {
-
+        Assertions.assertThrows(DataAccessException.class, () -> gameService.listGames("badAuthToken"));
     }
 
     @Test
-    public void createGamePositive() {
-
+    public void createGamePositive() throws DataAccessException {
+        AuthData mockAuthData = userService.register(userData);
+        int gameID1 = gameService.createGame("GameName", mockAuthData.getAuthToken());
+        int gameID2 = gameService.createGame("GameName", mockAuthData.getAuthToken());
+        Assertions.assertTrue(gameID1 != gameID2);
     }
 
     @Test
     public void createGameNegative() {
-
+        Assertions.assertThrows(DataAccessException.class, () ->
+                gameService.createGame("GameName", "badAuthToken"));
     }
 
     @Test
