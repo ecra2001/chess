@@ -5,6 +5,7 @@ import spark.*;
 import dataaccess.*;
 import model.*;
 import service.Service;
+import java.util.Map;
 
 public class Server {
     UserDAO userDAO;
@@ -47,19 +48,36 @@ public class Server {
 
     private Object register(Request req, Response res) {
         try {
-            return null;
+            UserData userData = new Gson().fromJson(req.body(), UserData.class);
+            AuthData authData = userService.register(userData);
+            if (userData.getUsername() == null || userData.getPassword() == null || userData.getEmail() == null) {
+                var body = new Gson().toJson(Map.of("message", "Error: bad request"));
+                res.status(400);
+                return body;
+            }
+            var auth = new AuthData(authData.getUsername(), authData.getAuthToken());
+            var json = new Gson().toJson(auth);
+            res.status(200);
+            return json;
+        } catch (DataAccessException e) {
+            var body = new Gson().toJson(Map.of("message", "Error: already taken"));
+            res.status(403);
+            return body;
         } catch (Exception e) {
             res.status(500);
-            return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
+            var body = new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage())));
+            return body;
         }
     }
 
     private Object login(Request req, Response res) {
         try {
+
             return null;
         } catch (Exception e) {
             res.status(500);
-            return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
+            var body = new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage())));
+            return body;
         }
     }
 
@@ -68,7 +86,8 @@ public class Server {
             return null;
         } catch (Exception e) {
             res.status(500);
-            return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
+            var body = new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage())));
+            return body;
         }
     }
 
@@ -77,7 +96,8 @@ public class Server {
             return null;
         } catch (Exception e) {
             res.status(500);
-            return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
+            var body = new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage())));
+            return body;
         }
     }
 
@@ -86,7 +106,8 @@ public class Server {
             return null;
         } catch (Exception e) {
             res.status(500);
-            return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
+            var body = new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage())));
+            return body;
         }
     }
 
@@ -95,7 +116,8 @@ public class Server {
             return null;
         } catch (Exception e) {
             res.status(500);
-            return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
+            var body = new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage())));
+            return body;
         }
     }
 
@@ -107,7 +129,8 @@ public class Server {
             return "{}";
         } catch (Exception e) {
             res.status(500);
-            return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
+            var body = new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage())));
+            return body;
         }
     }
 }
