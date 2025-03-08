@@ -67,8 +67,7 @@ public class Server {
             return body;
         } catch (Exception e) {
             res.status(500);
-            var body = new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage())));
-            return body;
+            return new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage())));
         }
     }
 
@@ -86,8 +85,7 @@ public class Server {
             return body;
         } catch (Exception e) {
             res.status(500);
-            var body = new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage())));
-            return body;
+            return new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage())));
         }
     }
 
@@ -103,8 +101,7 @@ public class Server {
             return body;
         } catch (Exception e) {
             res.status(500);
-            var body = new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage())));
-            return body;
+            return new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage())));
         }
     }
 
@@ -121,8 +118,7 @@ public class Server {
             return body;
         } catch (Exception e) {
             res.status(500);
-            var body = new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage())));
-            return body;
+            return new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage())));
         }
     }
 
@@ -145,8 +141,7 @@ public class Server {
             return body;
         } catch (Exception e) {
             res.status(500);
-            var body = new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage())));
-            return body;
+            return new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage())));
         }
     }
 
@@ -181,8 +176,7 @@ public class Server {
             return body;
         } catch (Exception e) {
             res.status(500);
-            var body = new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage())));
-            return body;
+            return new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage())));
         }
     }
 
@@ -194,8 +188,7 @@ public class Server {
             return "{}";
         } catch (Exception e) {
             res.status(500);
-            var body = new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage())));
-            return body;
+            return new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage())));
         }
     }
 }
