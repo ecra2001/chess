@@ -46,33 +46,68 @@ public class Server {
     }
 
     private Object register(Request req, Response res) {
-        return null;
+        try {
+            return null;
+        } catch (Exception e) {
+            res.status(500);
+            return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
+        }
     }
 
     private Object login(Request req, Response res) {
-        return null;
+        try {
+            return null;
+        } catch (Exception e) {
+            res.status(500);
+            return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
+        }
     }
 
     private Object logout(Request req, Response res) {
-        return null;
+        try {
+            return null;
+        } catch (Exception e) {
+            res.status(500);
+            return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
+        }
     }
 
     private Object listGames(Request req, Response res) {
-        return null;
+        try {
+            return null;
+        } catch (Exception e) {
+            res.status(500);
+            return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
+        }
     }
 
     private Object createGame(Request req, Response res) {
-        return null;
+        try {
+            return null;
+        } catch (Exception e) {
+            res.status(500);
+            return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
+        }
     }
 
     private Object joinGame(Request req, Response res) {
-        return null;
+        try {
+            return null;
+        } catch (Exception e) {
+            res.status(500);
+            return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
+        }
     }
 
     private Object clear(Request req, Response res) {
+        try {
             gameService.clear();
             userService.clear();
             res.status(200);
             return "{}";
+        } catch (Exception e) {
+            res.status(500);
+            return "{ \"message\": \"Error: " + e.getMessage() + "\" }";
+        }
     }
 }
