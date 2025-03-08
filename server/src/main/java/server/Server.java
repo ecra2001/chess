@@ -6,6 +6,8 @@ import dataaccess.*;
 import model.*;
 import service.Service;
 import java.util.Map;
+import java.util.HashSet;
+import java.util.HashMap;
 
 public class Server {
     UserDAO userDAO;
@@ -91,7 +93,14 @@ public class Server {
 
     private Object logout(Request req, Response res) {
         try {
-            return null;
+            String authToken = req.headers("authorization");
+            userService.logout(authToken);
+            res.status(200);
+            return "{}";
+        } catch (DataAccessException e) {
+            var body = new Gson().toJson(Map.of("message", "Error: unauthorized"));
+            res.status(401);
+            return body;
         } catch (Exception e) {
             res.status(500);
             var body = new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage())));
@@ -101,7 +110,15 @@ public class Server {
 
     private Object listGames(Request req, Response res) {
         try {
-            return null;
+            String authToken = req.headers("authorization");
+            HashSet<GameData> gameList = gameService.listGames(authToken);
+            var json = new Gson().toJson(Map.of("Games", gameList));
+            res.status(200);
+            return json;
+        } catch (DataAccessException e) {
+            var body = new Gson().toJson(Map.of("message", "Error: unauthorized"));
+            res.status(401);
+            return body;
         } catch (Exception e) {
             res.status(500);
             var body = new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage())));
