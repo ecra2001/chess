@@ -72,8 +72,16 @@ public class Server {
 
     private Object login(Request req, Response res) {
         try {
-
-            return null;
+            UserData userData = new Gson().fromJson(req.body(), UserData.class);
+            AuthData authData = userService.login(userData.getUsername(), userData.getPassword());
+            var auth = new AuthData(authData.getUsername(), authData.getAuthToken());
+            var json = new Gson().toJson(auth);
+            res.status(200);
+            return json;
+        } catch (DataAccessException e){
+            var body = new Gson().toJson(Map.of("message", "Error: unauthorized"));
+            res.status(401);
+            return body;
         } catch (Exception e) {
             res.status(500);
             var body = new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage())));
