@@ -153,10 +153,28 @@ public class Server {
     private Object joinGame(Request req, Response res) {
         try {
             String authToken = req.headers("authorization");
-            Map<String, Integer> body = new Gson().fromJson(req.body(), Map.class);
-
-            boolean attempt = gameService.joinGame(authToken, 0, null);
-            return null;
+            Map<String, Double> body = new Gson().fromJson(req.body(), Map.class);
+            if (body == null || !body.containsKey("playerColor") || !body.containsKey("gameID")) {
+                var json = new Gson().toJson(Map.of("message", "Error: bad request"));
+                res.status(400);
+                return json;
+            }
+            double id = body.get("gameID");
+            int gameID = (int) id;
+            String playerColor = String.valueOf(body.get("playerColor"));
+            if (!playerColor.equalsIgnoreCase("white") && !playerColor.equalsIgnoreCase("black")) {
+                var json = new Gson().toJson(Map.of("message", "Error: bad request"));
+                res.status(400);
+                return json;
+            }
+            boolean joinAttempt = gameService.joinGame(authToken, gameID, playerColor);
+            if (!joinAttempt) {
+                var json = new Gson().toJson(Map.of("message", "Error: already taken"));
+                res.status(403);
+                return json;
+            }
+            res.status(200);
+            return "{}";
         } catch (DataAccessException e) {
             var body = new Gson().toJson(Map.of("message", "Error: unauthorized"));
             res.status(401);
