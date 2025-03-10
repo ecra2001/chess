@@ -23,7 +23,6 @@ public class SQLUserDAO implements UserDAO {
     """
     };
 
-    //private final HashMap<String, UserData> db = new HashMap<String, UserData>();
     @Override
     public UserData getUser(String username) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
@@ -62,7 +61,8 @@ public class SQLUserDAO implements UserDAO {
 
     @Override
     public boolean authUser(String username, String password) throws DataAccessException {
-        return false;
+        UserData user = getUser(username);
+        return BCrypt.checkpw(password, user.getPassword());
     }
 
     @Override
