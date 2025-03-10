@@ -59,9 +59,9 @@ public class SQLUserDAO implements UserDAO {
                 }
             }
         } catch (SQLException e) {
-            throw new DataAccessException("User not found");
+            throw new DataAccessException("Failed to get user in database");
         }
-        return null;
+        throw new DataAccessException("User does not exist");
     }
 
     @Override
@@ -75,7 +75,7 @@ public class SQLUserDAO implements UserDAO {
                 ps.executeUpdate();
             }
         } catch (SQLException e) {
-            throw new DataAccessException("User not found");
+            throw new DataAccessException("Failed to create user in database");
         }
     }
 
