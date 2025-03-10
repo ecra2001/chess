@@ -82,6 +82,9 @@ public class SQLUserDAO implements UserDAO {
     @Override
     public boolean authUser(String username, String password) throws DataAccessException {
         UserData user = getUser(username);
+        if (user == null) {
+            throw new DataAccessException("User does not exist");
+        }
         return BCrypt.checkpw(password, user.getPassword());
     }
 
