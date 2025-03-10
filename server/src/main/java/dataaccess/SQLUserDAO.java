@@ -5,6 +5,7 @@ import model.UserData;
 import java.util.HashMap;
 import java.sql.*;
 import java.util.Collection;
+import org.mindrot.jbcrypt.BCrypt;
 
 
 public class SQLUserDAO implements UserDAO {
@@ -12,13 +13,12 @@ public class SQLUserDAO implements UserDAO {
     private final String[] createStatements = {
     """
           CREATE TABLE IF NOT EXISTS users (
-          `id` int NOT NULL AUTO_INCREMENT,
           `username` varchar(256) NOT NULL,
           `password` varchar(256) NOT NULL,
           `email` varchar(256),
-          `json` TEXT DEFAULT NULL,
-          PRIMARY KEY (`id`),
-          INDEX(username)
+          PRIMARY KEY (`username`),
+          INDEX(password)
+          INDEX(email)
           )
     """
     };
@@ -27,7 +27,7 @@ public class SQLUserDAO implements UserDAO {
     @Override
     public UserData getUser(String username) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT id, json FROM users WHERE id=?";
+            var statement = "SELECT username, password, email FROM users WHERE username=?";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setString(1, username);
                 try (var rs = ps.executeQuery()) {
@@ -47,7 +47,17 @@ public class SQLUserDAO implements UserDAO {
 
     @Override
     public void createUser(UserData userData) throws DataAccessException {
-
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "INSERT INTO users (username, password, email) VALUES (?, ?, ?)";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.setString(1, userData.getUsername());
+                ps.setString(2, BCrypt.hashpw(userData.getPassword(), BCrypt.gensalt()));
+                ps.setString(3, userData.getEmail());
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("User not found");
+        }
     }
 
     @Override
