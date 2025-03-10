@@ -10,6 +10,10 @@ import org.mindrot.jbcrypt.BCrypt;
 
 public class SQLUserDAO implements UserDAO {
 
+    public SQLUserDAO() {
+        configureDatabase();
+    }
+
     private final String[] createStatements = {
     """
           CREATE TABLE IF NOT EXISTS users (
@@ -18,10 +22,26 @@ public class SQLUserDAO implements UserDAO {
           `email` varchar(256),
           PRIMARY KEY (`username`),
           INDEX(password)
-          INDEX(email)
           )
     """
     };
+
+    private void configureDatabase() {
+        try {
+            DatabaseManager.createDatabase();
+        } catch (DataAccessException ex) {
+            throw new RuntimeException(ex);
+        }
+        try (var conn = DatabaseManager.getConnection()) {
+            for (var statement : createStatements) {
+                try (var preparedStatement = conn.prepareStatement(statement)) {
+                    preparedStatement.executeUpdate();
+                }
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public UserData getUser(String username) throws DataAccessException {
@@ -66,7 +86,14 @@ public class SQLUserDAO implements UserDAO {
     }
 
     @Override
-    public void clear() {
-
+    public void clear() throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "TRUNCATE users";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new DataAccessException("Failed to clear user database");
+        }
     }
 }
