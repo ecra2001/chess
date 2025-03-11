@@ -5,6 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
 import java.util.HashSet;
+import chess.ChessGame;
 
 class SQLTest {
     private SQLUserDAO sqlUserDAO;
@@ -23,7 +24,8 @@ class SQLTest {
         sqlUserDAO.createUser(user);
         AuthData auth = new AuthData("username", "authToken");
         sqlAuthDAO.createAuth(auth);
-        GameData game = new GameData(123, null, null, "game", null);
+        ChessGame chessGame = new ChessGame();
+        GameData game = new GameData(123, "white", "black", "game", chessGame);
         sqlGameDAO.addGame(game);
     }
 
@@ -135,7 +137,11 @@ class SQLTest {
     @Test
     void addGamePositive() throws DataAccessException {
         GameData gameData = sqlGameDAO.getGame(123);
+        Assertions.assertEquals("white", gameData.getWhiteUsername());
+        Assertions.assertEquals("black", gameData.getBlackUsername());
         Assertions.assertEquals("game", gameData.getGameName());
+        Assertions.assertEquals("game", gameData.getGameName());
+        Assertions.assertNotNull(gameData.getGame());
     }
 
     @Test
