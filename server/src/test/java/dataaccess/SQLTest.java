@@ -4,6 +4,7 @@ import model.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.Assertions;
+import java.util.HashSet;
 
 class SQLTest {
     private SQLUserDAO sqlUserDAO;
@@ -115,13 +116,20 @@ class SQLTest {
     }
 
     @Test
-    void getGameListPositive() {
-
+    void getGameListPositive() throws DataAccessException {
+        GameData game1 = new GameData(234, null, null, "game1", null);
+        GameData game2 = new GameData(345, null, null, "game2", null);
+        GameData game3 = new GameData(456, null, null, "game3", null);
+        sqlGameDAO.addGame(game1);
+        sqlGameDAO.addGame(game2);
+        sqlGameDAO.addGame(game3);
+        Assertions.assertNotNull(sqlGameDAO.getGameList());
     }
 
     @Test
     void getGameListNegative() {
-
+        sqlGameDAO.clear();
+        Assertions.assertDoesNotThrow(() -> sqlGameDAO.getGameList());
     }
 
     @Test
