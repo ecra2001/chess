@@ -102,12 +102,26 @@ public class SQLGameDAO implements GameDAO {
         } catch (SQLException e) {
             throw new DataAccessException("Failed to get game from Database");
         }
-        return null;
+        throw new DataAccessException("GameID does not exist");
     }
 
     @Override
     public boolean gameExists(int gameID) {
-        return false;
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT gameID from games WHERE gameID=?";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.setInt(1, gameID);
+                try (var rs = ps.executeQuery()) {
+                    if (rs.next()) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+        } catch (SQLException | DataAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override
