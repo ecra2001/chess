@@ -13,7 +13,7 @@ public class SQLGameDAO implements GameDAO {
     }
     private final String[] createStatements = {
             """
-          CREATE TABLE IF NOT EXISTS games (
+          CREATE TABLE IF NOT EXISTS chessGames (
           `gameID` int NOT NULL,
           `whiteUsername` varchar(256),
           `blackUsername` varchar(256),
@@ -44,7 +44,7 @@ public class SQLGameDAO implements GameDAO {
     public HashSet<GameData> getGameList() {
         var list = new HashSet<GameData>();
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT id, whiteUsername, blackUsername, gameName, game FROM games";
+            var statement = "SELECT id, whiteUsername, blackUsername, gameName, game FROM chessGames";
             try (var ps = conn.prepareStatement(statement)) {
                 try (var rs = ps.executeQuery()) {
                     while (rs.next()){
@@ -67,7 +67,7 @@ public class SQLGameDAO implements GameDAO {
     @Override
     public void addGame(GameData gameData) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "INSERT INTO games (gameID, whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?)";
+            var statement = "INSERT INTO chessGames (gameID, whiteUsername, blackUsername, gameName, game) VALUES (?, ?, ?, ?, ?)";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setInt(1, gameData.getGameID());
                 ps.setString(2, gameData.getWhiteUsername());
@@ -85,7 +85,7 @@ public class SQLGameDAO implements GameDAO {
     @Override
     public GameData getGame(int gameID) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM games WHERE gameID=?";
+            var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM chessGames WHERE gameID=?";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setInt(1, gameID);
                 try (var rs = ps.executeQuery()) {
@@ -108,7 +108,7 @@ public class SQLGameDAO implements GameDAO {
     @Override
     public boolean gameExists(int gameID) {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT gameID from games WHERE gameID=?";
+            var statement = "SELECT gameID from chessGames WHERE gameID=?";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setInt(1, gameID);
                 try (var rs = ps.executeQuery()) {
@@ -127,7 +127,7 @@ public class SQLGameDAO implements GameDAO {
     @Override
     public void updateGame(GameData gameData) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "UPDATE games SET whiteUsername=?, blackUsername=?, gameName=?, game=? WHERE gameID=?";
+            var statement = "UPDATE chessGames SET whiteUsername=?, blackUsername=?, gameName=?, game=? WHERE gameID=?";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setInt(1, gameData.getGameID());
                 ps.setString(2, gameData.getWhiteUsername());
@@ -145,7 +145,7 @@ public class SQLGameDAO implements GameDAO {
     @Override
     public void clear() {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "TRUNCATE games";
+            var statement = "TRUNCATE chessGames";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.executeUpdate();
             }
