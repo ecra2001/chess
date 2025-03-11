@@ -168,12 +168,12 @@ class SQLTest {
 
     @Test
     void gameExistsPositive() {
-
+        Assertions.assertTrue(sqlGameDAO.gameExists(123));
     }
 
     @Test
     void gameExistsNegative() {
-
+        Assertions.assertFalse(sqlGameDAO.gameExists(111));
     }
 
     @Test
