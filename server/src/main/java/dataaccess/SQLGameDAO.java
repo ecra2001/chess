@@ -19,7 +19,10 @@ public class SQLGameDAO implements GameDAO {
           `blackUsername` varchar(256),
           `gameName` varchar(256),
           `game` TEXT DEFAULT NULL,
-          PRIMARY KEY (`gameID`)
+          PRIMARY KEY (`gameID`),
+          INDEX(whiteUsername),
+          INDEX(blackUsername),
+          INDEX(gameName)
           )
     """
     };

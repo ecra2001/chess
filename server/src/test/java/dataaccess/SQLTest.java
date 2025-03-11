@@ -8,17 +8,22 @@ import org.junit.jupiter.api.Assertions;
 class SQLTest {
     private SQLUserDAO sqlUserDAO;
     private SQLAuthDAO sqlAuthDAO;
+    private SQLGameDAO sqlGameDAO;
 
     @BeforeEach
     public void setup() throws DataAccessException {
         sqlUserDAO = new SQLUserDAO();
         sqlAuthDAO = new SQLAuthDAO();
+        sqlGameDAO = new SQLGameDAO();
         sqlUserDAO.clear();
         sqlAuthDAO.clear();
+        sqlGameDAO.clear();
         UserData user = new UserData("username", "password", "email");
         sqlUserDAO.createUser(user);
         AuthData auth = new AuthData("username", "authToken");
         sqlAuthDAO.createAuth(auth);
+        GameData game = new GameData(123, null, null, "game", null);
+        sqlGameDAO.addGame(game);
     }
 
     @Test
@@ -161,6 +166,7 @@ class SQLTest {
 
     @Test
     void clearGameTest() {
-
+        sqlGameDAO.clear();
+        Assertions.assertThrows(DataAccessException.class, () -> sqlGameDAO.getGame(123));
     }
 }
