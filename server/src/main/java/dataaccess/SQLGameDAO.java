@@ -129,12 +129,12 @@ public class SQLGameDAO implements GameDAO {
         try (var conn = DatabaseManager.getConnection()) {
             var statement = "UPDATE chessGames SET whiteUsername=?, blackUsername=?, gameName=?, game=? WHERE gameID=?";
             try (var ps = conn.prepareStatement(statement)) {
-                ps.setInt(1, gameData.getGameID());
-                ps.setString(2, gameData.getWhiteUsername());
-                ps.setString(3, gameData.getBlackUsername());
-                ps.setString(4, gameData.getGameName());
+                ps.setString(1, gameData.getWhiteUsername());
+                ps.setString(2, gameData.getBlackUsername());
+                ps.setString(3, gameData.getGameName());
                 var json = new Gson().toJson(gameData.getGame());
-                ps.setString(5, json);
+                ps.setString(4, json);
+                ps.setInt(5, gameData.getGameID());
                 ps.executeUpdate();
             }
         } catch (SQLException e) {
