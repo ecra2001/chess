@@ -4,8 +4,7 @@ import model.AuthData;
 
 import java.sql.*;
 import java.util.Collection;
-
-import model.UserData;
+import model.AuthData;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class SQLAuthDAO implements AuthDAO {
@@ -17,8 +16,8 @@ public class SQLAuthDAO implements AuthDAO {
           CREATE TABLE IF NOT EXISTS auths (
           `username` varchar(256) NOT NULL,
           `authToken` varchar(256) NOT NULL,
-          PRIMARY KEY (`username`),
-          INDEX(authToken)
+          PRIMARY KEY (`authToken`),
+          INDEX(username)
           )
     """
     };
@@ -42,6 +41,11 @@ public class SQLAuthDAO implements AuthDAO {
     @Override
     public void createAuth(AuthData authData) {
         try (var conn = DatabaseManager.getConnection()) {
+            var removeStatement = "DELETE FROM auths WHERE username = ?";
+            try (var removePs = conn.prepareStatement(removeStatement)) {
+                removePs.setString(1, authData.getUsername());
+                removePs.executeUpdate();
+            }
             var statement = "INSERT INTO auths (username, authToken) VALUES (?, ?)";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setString(1, authData.getUsername());

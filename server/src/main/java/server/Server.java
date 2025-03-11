@@ -17,7 +17,7 @@ public class Server {
     Service.GameService gameService;
     public Server() {
         userDAO = new SQLUserDAO(); // eventually change these to SQL
-        authDAO = new MemoryAuthDAO();
+        authDAO = new SQLAuthDAO();
         gameDAO = new MemoryGameDAO();
         userService = new Service.UserService(userDAO, authDAO);
         gameService = new Service.GameService(gameDAO, authDAO);
