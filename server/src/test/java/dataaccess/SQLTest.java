@@ -49,12 +49,104 @@ class SQLTest {
     }
 
     @Test
-    void authUserNegative() {
+    void authUserNegative() throws DataAccessException {
+        Assertions.assertThrows(DataAccessException.class, () -> sqlUserDAO.authUser("badUsername", "password"));
+        Assertions.assertFalse(sqlUserDAO.authUser("username", "badPassword"));
+    }
+
+    @Test
+    void clearUserTest() throws DataAccessException {
+        sqlUserDAO.clear();
+        Assertions.assertThrows(DataAccessException.class, () -> sqlUserDAO.getUser("username"));
+    }
+
+    @Test
+    void createAuthPositive() {
 
     }
 
     @Test
-    void clearUserTest() {
+    void createAuthNegative() {
+
+    }
+
+    @Test
+    void getAuthPositive() {
+
+    }
+
+    @Test
+    void getAuthNegative() {
+
+    }
+
+    @Test
+    void removeAuthPositive() {
+
+    }
+
+    @Test
+    void removeAuthNegative() {
+
+    }
+
+    @Test
+    void clearAuthTest() {
+
+    }
+
+    @Test
+    void getGameListPositive() {
+
+    }
+
+    @Test
+    void getGameListNegative() {
+
+    }
+
+    @Test
+    void addGamePositive() {
+
+    }
+
+    @Test
+    void addGameNegative() {
+
+    }
+
+    @Test
+    void getGamePositive() {
+
+    }
+
+    @Test
+    void getGameNegative() {
+
+    }
+
+    @Test
+    void gameExistsPositive() {
+
+    }
+
+    @Test
+    void gameExistsNegative() {
+
+    }
+
+    @Test
+    void updateGamePositive() {
+
+    }
+
+    @Test
+    void updateGameNegative() {
+
+    }
+
+    @Test
+    void clearGameTest() {
 
     }
 }
