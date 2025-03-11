@@ -94,17 +94,19 @@ class SQLTest {
 
     @Test
     void removeAuthPositive() {
-
+        sqlAuthDAO.removeAuth("authToken");
+        Assertions.assertThrows(DataAccessException.class, () -> sqlAuthDAO.getAuth("authToken"));
     }
 
     @Test
     void removeAuthNegative() {
-
+        Assertions.assertDoesNotThrow(() -> sqlAuthDAO.removeAuth("badAuthToken"));
     }
 
     @Test
-    void clearAuthTest() {
-
+    void clearAuthTest() throws DataAccessException {
+        sqlAuthDAO.clear();
+        Assertions.assertThrows(DataAccessException.class, () -> sqlAuthDAO.getAuth("authToken"));
     }
 
     @Test
