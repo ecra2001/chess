@@ -80,13 +80,16 @@ class SQLTest {
     }
 
     @Test
-    void getAuthPositive() {
-
+    void getAuthPositive() throws DataAccessException {
+        Assertions.assertNotNull(sqlAuthDAO.getAuth("authToken"));
+        AuthData authData = sqlAuthDAO.getAuth("authToken");
+        Assertions.assertEquals("username", authData.getUsername());
+        Assertions.assertEquals("authToken", authData.getAuthToken());
     }
 
     @Test
     void getAuthNegative() {
-
+        Assertions.assertThrows(DataAccessException.class, () -> sqlAuthDAO.getAuth("wrongAuthToken"));
     }
 
     @Test
