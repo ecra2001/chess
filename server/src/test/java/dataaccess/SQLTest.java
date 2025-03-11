@@ -17,6 +17,7 @@ class SQLTest {
 
     @Test
     void getUserPositive() throws DataAccessException {
+        Assertions.assertNotNull(sqlUserDAO.getUser("username"));
         UserData userData = sqlUserDAO.getUser("username");
         Assertions.assertEquals("username", userData.getUsername());
         Assertions.assertEquals("email", userData.getEmail());
@@ -29,18 +30,22 @@ class SQLTest {
     }
 
     @Test
-    void createUserPositive() {
-
+    void createUserPositive() throws DataAccessException {
+        UserData userData = sqlUserDAO.getUser("username");
+        Assertions.assertEquals("username", userData.getUsername());
+        Assertions.assertEquals("email", userData.getEmail());
+        Assertions.assertTrue(sqlUserDAO.authUser("username", "password"));
     }
 
     @Test
     void createUserNegative() {
-
+        UserData sameUser = new UserData("username", "password", "email");
+        Assertions.assertThrows(DataAccessException.class, () -> sqlUserDAO.createUser(sameUser));
     }
 
     @Test
-    void authUserPositive() {
-
+    void authUserPositive() throws DataAccessException {
+        Assertions.assertTrue(sqlUserDAO.authUser("username", "password"));
     }
 
     @Test
