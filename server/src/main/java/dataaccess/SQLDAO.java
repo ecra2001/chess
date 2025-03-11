@@ -2,9 +2,9 @@ package dataaccess;
 
 import java.sql.*;
 
-public abstract class SQLDAO {
+public class SQLDAO {
 
-    protected void configureDatabase(String[] createStatements) {
+    static void configureDatabase(String[] createStatements) {
         try {
             DatabaseManager.createDatabase();
         } catch (DataAccessException ex) {
