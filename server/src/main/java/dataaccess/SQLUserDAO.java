@@ -11,7 +11,7 @@ import org.mindrot.jbcrypt.BCrypt;
 public class SQLUserDAO implements UserDAO {
 
     public SQLUserDAO() {
-        configureDatabase();
+        configureDatabaseUser();
     }
 
     private final String[] createStatements = {
@@ -26,7 +26,7 @@ public class SQLUserDAO implements UserDAO {
     """
     };
 
-    private void configureDatabase() {
+    private void configureDatabaseUser() {
         try {
             DatabaseManager.createDatabase();
         } catch (DataAccessException ex) {

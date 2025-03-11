@@ -6,7 +6,7 @@ import java.sql.*;
 
 public class SQLAuthDAO implements AuthDAO {
     public SQLAuthDAO() {
-        configureDatabase();
+        configureDatabaseAuth();
     }
     private final String[] createStatements = {
             """
@@ -19,7 +19,7 @@ public class SQLAuthDAO implements AuthDAO {
     """
     };
 
-    private void configureDatabase() {
+    private void configureDatabaseAuth() {
         try {
             DatabaseManager.createDatabase();
         } catch (DataAccessException ex) {

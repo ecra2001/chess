@@ -9,7 +9,7 @@ import com.google.gson.Gson;
 
 public class SQLGameDAO implements GameDAO {
     public SQLGameDAO() {
-        configureDatabase();
+        configureDatabaseGame();
     }
     private final String[] createStatements = {
             """
@@ -27,7 +27,7 @@ public class SQLGameDAO implements GameDAO {
     """
     };
 
-    private void configureDatabase() {
+    private void configureDatabaseGame() {
         try {
             DatabaseManager.createDatabase();
         } catch (DataAccessException ex) {
