@@ -133,13 +133,15 @@ class SQLTest {
     }
 
     @Test
-    void addGamePositive() {
-
+    void addGamePositive() throws DataAccessException {
+        GameData gameData = sqlGameDAO.getGame(123);
+        Assertions.assertEquals("game", gameData.getGameName());
     }
 
     @Test
     void addGameNegative() {
-
+        GameData sameGame = new GameData(123, null, null, "game", null);
+        Assertions.assertThrows(DataAccessException.class, () -> sqlGameDAO.addGame(sameGame));
     }
 
     @Test
