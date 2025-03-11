@@ -151,13 +151,19 @@ class SQLTest {
     }
 
     @Test
-    void getGamePositive() {
-
+    void getGamePositive() throws DataAccessException {
+        Assertions.assertNotNull(sqlGameDAO.getGame(123));
+        GameData gameData = sqlGameDAO.getGame(123);
+        Assertions.assertEquals("white", gameData.getWhiteUsername());
+        Assertions.assertEquals("black", gameData.getBlackUsername());
+        Assertions.assertEquals("game", gameData.getGameName());
+        Assertions.assertEquals("game", gameData.getGameName());
+        Assertions.assertNotNull(gameData.getGame());
     }
 
     @Test
     void getGameNegative() {
-
+        Assertions.assertThrows(DataAccessException.class, () -> sqlGameDAO.getGame(111));
     }
 
     @Test
