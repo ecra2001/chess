@@ -7,12 +7,18 @@ import org.junit.jupiter.api.Assertions;
 
 class SQLTest {
     private SQLUserDAO sqlUserDAO;
+    private SQLAuthDAO sqlAuthDAO;
+
     @BeforeEach
     public void setup() throws DataAccessException {
         sqlUserDAO = new SQLUserDAO();
+        sqlAuthDAO = new SQLAuthDAO();
         sqlUserDAO.clear();
+        sqlAuthDAO.clear();
         UserData user = new UserData("username", "password", "email");
         sqlUserDAO.createUser(user);
+        AuthData auth = new AuthData("username", "authToken");
+        sqlAuthDAO.createAuth(auth);
     }
 
     @Test
@@ -61,13 +67,16 @@ class SQLTest {
     }
 
     @Test
-    void createAuthPositive() {
-
+    void createAuthPositive() throws DataAccessException {
+        AuthData authData = sqlAuthDAO.getAuth("authToken");
+        Assertions.assertEquals("username", authData.getUsername());
+        Assertions.assertEquals("authToken", authData.getAuthToken());
     }
 
     @Test
     void createAuthNegative() {
-
+        AuthData sameAuth = new AuthData("username", "authToken");
+        Assertions.assertThrows(RuntimeException.class, () -> sqlAuthDAO.createAuth(sameAuth));
     }
 
     @Test

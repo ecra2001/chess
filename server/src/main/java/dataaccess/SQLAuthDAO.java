@@ -3,9 +3,6 @@ package dataaccess;
 import model.AuthData;
 
 import java.sql.*;
-import java.util.Collection;
-import model.AuthData;
-import org.mindrot.jbcrypt.BCrypt;
 
 public class SQLAuthDAO implements AuthDAO {
     public SQLAuthDAO() {
