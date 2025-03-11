@@ -13,7 +13,7 @@ public class SQLAuthDAO implements AuthDAO {
     }
     private final String[] createStatements = {
             """
-          CREATE TABLE IF NOT EXISTS auths (
+          CREATE TABLE IF NOT EXISTS auth (
           `username` varchar(256) NOT NULL,
           `authToken` varchar(256) NOT NULL,
           PRIMARY KEY (`authToken`),
@@ -41,12 +41,7 @@ public class SQLAuthDAO implements AuthDAO {
     @Override
     public void createAuth(AuthData authData) {
         try (var conn = DatabaseManager.getConnection()) {
-            var removeStatement = "DELETE FROM auths WHERE username = ?";
-            try (var removePs = conn.prepareStatement(removeStatement)) {
-                removePs.setString(1, authData.getUsername());
-                removePs.executeUpdate();
-            }
-            var statement = "INSERT INTO auths (username, authToken) VALUES (?, ?)";
+            var statement = "INSERT INTO auth (username, authToken) VALUES (?, ?)";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setString(1, authData.getUsername());
                 ps.setString(2, authData.getAuthToken());
@@ -60,7 +55,7 @@ public class SQLAuthDAO implements AuthDAO {
     @Override
     public AuthData getAuth(String authToken) throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT username, authToken FROM auths WHERE authToken=?";
+            var statement = "SELECT username, authToken FROM auth WHERE authToken=?";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setString(1, authToken);
                 try (var rs = ps.executeQuery()) {
@@ -79,7 +74,7 @@ public class SQLAuthDAO implements AuthDAO {
     @Override
     public void removeAuth(String authToken) {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "DELETE FROM auths WHERE authToken=?";
+            var statement = "DELETE FROM auth WHERE authToken=?";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.setString(1, authToken);
                 ps.executeUpdate();
@@ -92,7 +87,7 @@ public class SQLAuthDAO implements AuthDAO {
     @Override
     public void clear() throws DataAccessException {
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "TRUNCATE auths";
+            var statement = "TRUNCATE auth";
             try (var ps = conn.prepareStatement(statement)) {
                 ps.executeUpdate();
             }
