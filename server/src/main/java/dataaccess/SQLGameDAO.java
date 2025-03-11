@@ -44,7 +44,7 @@ public class SQLGameDAO implements GameDAO {
     public HashSet<GameData> getGameList() {
         var list = new HashSet<GameData>();
         try (var conn = DatabaseManager.getConnection()) {
-            var statement = "SELECT id, whiteUsername, blackUsername, gameName, game FROM chessGames";
+            var statement = "SELECT gameID, whiteUsername, blackUsername, gameName, game FROM chessGames";
             try (var ps = conn.prepareStatement(statement)) {
                 try (var rs = ps.executeQuery()) {
                     while (rs.next()){
