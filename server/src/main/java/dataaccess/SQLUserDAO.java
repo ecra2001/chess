@@ -8,10 +8,10 @@ import java.util.Collection;
 import org.mindrot.jbcrypt.BCrypt;
 
 
-public class SQLUserDAO implements UserDAO {
+public class SQLUserDAO extends SQLDAO implements UserDAO {
 
     public SQLUserDAO() {
-        configureDatabaseUser();
+        configureDatabase(createStatements);
     }
 
     private final String[] createStatements = {
@@ -25,23 +25,6 @@ public class SQLUserDAO implements UserDAO {
           )
     """
     };
-
-    private void configureDatabaseUser() {
-        try {
-            DatabaseManager.createDatabase();
-        } catch (DataAccessException ex) {
-            throw new RuntimeException(ex);
-        }
-        try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException | DataAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     @Override
     public UserData getUser(String username) throws DataAccessException {

@@ -7,9 +7,9 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import com.google.gson.Gson;
 
-public class SQLGameDAO implements GameDAO {
+public class SQLGameDAO extends SQLDAO implements GameDAO {
     public SQLGameDAO() {
-        configureDatabaseGame();
+        configureDatabase(createStatements);
     }
     private final String[] createStatements = {
             """
@@ -26,23 +26,6 @@ public class SQLGameDAO implements GameDAO {
           )
     """
     };
-
-    private void configureDatabaseGame() {
-        try {
-            DatabaseManager.createDatabase();
-        } catch (DataAccessException ex) {
-            throw new RuntimeException(ex);
-        }
-        try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException | DataAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
     @Override
     public HashSet<GameData> getGameList() {
         var list = new HashSet<GameData>();

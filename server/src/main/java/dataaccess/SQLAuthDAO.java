@@ -4,9 +4,9 @@ import model.AuthData;
 
 import java.sql.*;
 
-public class SQLAuthDAO implements AuthDAO {
+public class SQLAuthDAO extends SQLDAO implements AuthDAO {
     public SQLAuthDAO() {
-        configureDatabaseAuth();
+        configureDatabase(createStatements);
     }
     private final String[] createStatements = {
             """
@@ -18,23 +18,6 @@ public class SQLAuthDAO implements AuthDAO {
           )
     """
     };
-
-    private void configureDatabaseAuth() {
-        try {
-            DatabaseManager.createDatabase();
-        } catch (DataAccessException ex) {
-            throw new RuntimeException(ex);
-        }
-        try (var conn = DatabaseManager.getConnection()) {
-            for (var statement : createStatements) {
-                try (var preparedStatement = conn.prepareStatement(statement)) {
-                    preparedStatement.executeUpdate();
-                }
-            }
-        } catch (SQLException | DataAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
     @Override
     public void createAuth(AuthData authData) {
         try (var conn = DatabaseManager.getConnection()) {
