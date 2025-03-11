@@ -11,6 +11,7 @@ class SQLTest {
     private SQLUserDAO sqlUserDAO;
     private SQLAuthDAO sqlAuthDAO;
     private SQLGameDAO sqlGameDAO;
+    GameData game;
 
     @BeforeEach
     public void setup() throws DataAccessException {
@@ -25,7 +26,7 @@ class SQLTest {
         AuthData auth = new AuthData("username", "authToken");
         sqlAuthDAO.createAuth(auth);
         ChessGame chessGame = new ChessGame();
-        GameData game = new GameData(123, "white", "black", "game", chessGame);
+        game = new GameData(123, "white", "black", "game", chessGame);
         sqlGameDAO.addGame(game);
     }
 
@@ -177,13 +178,19 @@ class SQLTest {
     }
 
     @Test
-    void updateGamePositive() {
-
+    void updateGamePositive() throws DataAccessException {
+        GameData gameData2 = new GameData(game.getGameID(), "newWhite", "newBlack", "newGame", game.getGame());
+        sqlGameDAO.updateGame(gameData2);
+        GameData finalGame = sqlGameDAO.getGame(game.getGameID());
+        Assertions.assertEquals(gameData2.getWhiteUsername(), finalGame.getWhiteUsername());
+        Assertions.assertEquals(gameData2.getBlackUsername(), finalGame.getBlackUsername());
+        Assertions.assertEquals(gameData2.getGameName(), finalGame.getGameName());
     }
 
     @Test
     void updateGameNegative() {
-
+        sqlGameDAO.clear();
+        Assertions.assertThrows(DataAccessException.class, () -> sqlGameDAO.updateGame(game));
     }
 
     @Test

@@ -138,7 +138,10 @@ public class SQLGameDAO implements GameDAO {
                 var json = new Gson().toJson(gameData.getGame());
                 ps.setString(4, json);
                 ps.setInt(5, gameData.getGameID());
-                ps.executeUpdate();
+                int itemsUpdated = ps.executeUpdate();
+                if (itemsUpdated == 0) {
+                    throw new DataAccessException("Nothing was updated");
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
