@@ -1,9 +1,10 @@
 package dataaccess;
 
 import model.GameData;
-
+import chess.ChessGame;
 import java.sql.SQLException;
 import java.util.HashSet;
+import com.google.gson.Gson;
 
 public class SQLGameDAO implements GameDAO {
     public SQLGameDAO() {
@@ -11,7 +12,7 @@ public class SQLGameDAO implements GameDAO {
     }
     private final String[] createStatements = {
             """
-          CREATE TABLE IF NOT EXISTS game (
+          CREATE TABLE IF NOT EXISTS games (
           `gameID` int NOT NULL,
           `whiteUsername` varchar(256),
           `blackUsername` varchar(256),
@@ -40,7 +41,26 @@ public class SQLGameDAO implements GameDAO {
     }
     @Override
     public HashSet<GameData> getGameList() {
-        return null;
+        var list = new HashSet<GameData>();
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "SELECT id, whiteUsername, blackUsername, gameName, game FROM games";
+            try (var ps = conn.prepareStatement(statement)) {
+                try (var rs = ps.executeQuery()) {
+                    while (rs.next()){
+                        var gameID = rs.getInt("gameID");
+                        var whiteUsername = rs.getString("whiteUsername");
+                        var blackUsername = rs.getString("blackUsername");
+                        var gameName = rs.getString("gameName");
+                        var json = rs.getString("game");
+                        var chessGame = new Gson().fromJson(json, ChessGame.class);
+                        list.add(new GameData(gameID, whiteUsername, blackUsername,gameName, chessGame));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return list;
     }
 
     @Override
