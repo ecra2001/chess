@@ -1,12 +1,14 @@
 package client;
 
+import exception.ResponseException;
 import org.junit.jupiter.api.*;
 import server.Server;
-
+import model.*;
 
 public class ServerFacadeTests {
 
     private static Server server;
+    private ServerFacade serverFacade;
 
     @BeforeAll
     public static void init() {
@@ -22,8 +24,8 @@ public class ServerFacadeTests {
 
 
     @Test
-    public void sampleTest() {
-        Assertions.assertTrue(true);
+    public void registerPositive() throws ResponseException {
+        //Assertions.assertTrue(serverFacade.register(new UserData("username", "password", "email")));
     }
 
 }
