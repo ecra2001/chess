@@ -91,4 +91,17 @@ public class ServerFacadeTests {
     public void listGamesNegative() {
         Assertions.assertThrows(ResponseException.class, () -> serverFacade.listGames("badAuth"));
     }
+
+    @Test
+    public void createGamePositive() throws ResponseException {
+        UserData userData = new UserData("player1", "password", "p1@email.com");
+        AuthData authData = serverFacade.register(userData);
+        GameData gameData = new GameData(123, "white", "black", "game1", null);
+        serverFacade.createGame(gameData.getGameName(), authData.getAuthToken());
+    }
+
+    @Test
+    public void createGameNegative() {
+
+    }
 }
