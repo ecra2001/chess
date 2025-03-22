@@ -5,6 +5,7 @@ import exception.ResponseException;
 import model.*;
 import java.io.*;
 import java.net.*;
+import java.util.HashSet;
 import java.util.Map;
 
 public class ServerFacade {
@@ -28,6 +29,14 @@ public class ServerFacade {
     public void logout(String authToken) throws ResponseException {
         var path = "/session";
         this.makeRequest("DELETE", path, null, null, authToken);
+    }
+
+    public HashSet<GameData> listGames(String authToken) throws ResponseException {
+        var path = "/game";
+        record listGameResponse(HashSet<GameData> gameList) {
+        }
+        var response = this.makeRequest("GET", path, null, listGameResponse.class, authToken);
+        return response.gameList();
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass, String authToken) throws ResponseException {
