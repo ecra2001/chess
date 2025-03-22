@@ -111,6 +111,7 @@ public class ServerFacadeTests {
         AuthData authData = serverFacade.register(userData);
         int gameID = serverFacade.createGame("game1", authData.getAuthToken());
         //Assertions.assertTrue(serverFacade.joinGame(authData.getAuthToken(), gameID, "white"));
+        //this test keeps returning false
         Assertions.assertDoesNotThrow(() -> serverFacade.joinGame(authData.getAuthToken(), gameID, "white"));
     }
 
