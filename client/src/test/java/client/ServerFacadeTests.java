@@ -61,6 +61,9 @@ public class ServerFacadeTests {
 
     @Test
     public void loginNegative() throws ResponseException {
-
+        UserData userData = new UserData("player1", "password", "p1@email.com");
+        serverFacade.register(userData);
+        UserData badUser = new UserData("player2", "pass", "p1@email.com");
+        Assertions.assertThrows(ResponseException.class, () -> serverFacade.login(badUser.getUsername(), badUser.getPassword()));
     }
 }
