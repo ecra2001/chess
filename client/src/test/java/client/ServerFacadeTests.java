@@ -1,5 +1,6 @@
 package client;
 
+import dataaccess.DataAccessException;
 import exception.ResponseException;
 import org.junit.jupiter.api.*;
 import server.Server;
@@ -31,13 +32,23 @@ public class ServerFacadeTests {
         server.stop();
     }
 
+    @BeforeEach
+    public void setup() throws DataAccessException {
+        server.clear();
+    }
 
     @Test
     public void registerPositive() throws ResponseException {
         UserData userData = new UserData("player1", "password", "p1@email.com");
-        //Assertions.assertTrue(serverFacade.register(new UserData("username", "password", "email")));
         var authData = serverFacade.register(userData);
         assertTrue(authData.getAuthToken().length() > 10);
+    }
+
+    @Test
+    public void registerNegative() throws ResponseException {
+        UserData userData = new UserData("player1", "password", "p1@email.com");
+        serverFacade.register(userData);
+        Assertions.assertThrows(ResponseException.class, () -> serverFacade.register(userData));
     }
 
 }

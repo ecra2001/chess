@@ -182,13 +182,17 @@ public class Server {
 
     private Object clear(Request req, Response res) {
         try {
-            gameService.clear();
-            userService.clear();
+            clear();
             res.status(200);
             return "{}";
         } catch (Exception e) {
             res.status(500);
             return new Gson().toJson(Map.of("message", String.format("Error: %s", e.getMessage())));
         }
+    }
+
+    public void clear() throws DataAccessException {
+        gameService.clear();
+        userService.clear();
     }
 }
