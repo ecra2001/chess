@@ -83,8 +83,8 @@ public class ServerFacadeTests {
     public void listGamesPositive() throws ResponseException {
         UserData userData = new UserData("player1", "password", "p1@email.com");
         AuthData authData = serverFacade.register(userData);
-        //need createGame
-        Assertions.assertNotNull(serverFacade.listGames(authData.getAuthToken()));
+        serverFacade.createGame("game1", authData.getAuthToken());
+        Assertions.assertDoesNotThrow(() -> serverFacade.listGames(authData.getAuthToken()));
     }
 
     @Test
@@ -97,11 +97,11 @@ public class ServerFacadeTests {
         UserData userData = new UserData("player1", "password", "p1@email.com");
         AuthData authData = serverFacade.register(userData);
         GameData gameData = new GameData(123, "white", "black", "game1", null);
-        serverFacade.createGame(gameData.getGameName(), authData.getAuthToken());
+        Assertions.assertDoesNotThrow(() -> serverFacade.createGame(gameData.getGameName(), authData.getAuthToken()));
     }
 
     @Test
     public void createGameNegative() {
-
+        Assertions.assertThrows(ResponseException.class, () -> serverFacade.createGame("game2", "badAuth"));
     }
 }
