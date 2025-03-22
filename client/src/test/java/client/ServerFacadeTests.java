@@ -51,4 +51,16 @@ public class ServerFacadeTests {
         Assertions.assertThrows(ResponseException.class, () -> serverFacade.register(userData));
     }
 
+    @Test
+    public void loginPositive() throws ResponseException {
+        UserData userData = new UserData("player1", "password", "p1@email.com");
+        serverFacade.register(userData);
+        var authData = serverFacade.login(userData.getUsername(), userData.getPassword());
+        assertTrue(authData.getAuthToken().length() > 10);
+    }
+
+    @Test
+    public void loginNegative() throws ResponseException {
+
+    }
 }

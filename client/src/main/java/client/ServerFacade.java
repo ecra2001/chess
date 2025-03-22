@@ -21,7 +21,7 @@ public class ServerFacade {
 
     public AuthData login(String username, String password) throws ResponseException {
         var path = "/session";
-        var body = new Gson().toJson(Map.of("username", username, "password", password));
+        var body = new LoginRequest(username, password);
         return this.makeRequest("POST", path, body, AuthData.class);
     }
 
