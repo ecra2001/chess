@@ -5,6 +5,7 @@ import exception.ResponseException;
 import model.*;
 import java.io.*;
 import java.net.*;
+import java.util.Map;
 
 public class ServerFacade {
     private final String serverUrl;
@@ -16,6 +17,12 @@ public class ServerFacade {
     public AuthData register(UserData userData) throws ResponseException {
         var path = "/user";
         return this.makeRequest("POST", path, userData, AuthData.class);
+    }
+
+    public AuthData login(String username, String password) throws ResponseException {
+        var path = "/session";
+        var body = new Gson().toJson(Map.of("username", username, "password", password));
+        return this.makeRequest("POST", path, body, AuthData.class);
     }
 
     private <T> T makeRequest(String method, String path, Object request, Class<T> responseClass) throws ResponseException {
