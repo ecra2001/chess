@@ -104,4 +104,18 @@ public class ServerFacadeTests {
     public void createGameNegative() {
         Assertions.assertThrows(ResponseException.class, () -> serverFacade.createGame("game2", "badAuth"));
     }
+
+    @Test
+    public void joinGamePositive() throws ResponseException {
+        UserData userData = new UserData("player1", "password", "p1@email.com");
+        AuthData authData = serverFacade.register(userData);
+        int gameID = serverFacade.createGame("game1", authData.getAuthToken());
+        //Assertions.assertTrue(serverFacade.joinGame(authData.getAuthToken(), gameID, "white"));
+        Assertions.assertDoesNotThrow(() -> serverFacade.joinGame(authData.getAuthToken(), gameID, "white"));
+    }
+
+    @Test
+    public void joinGameNegative() {
+
+    }
 }
