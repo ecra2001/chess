@@ -66,4 +66,16 @@ public class ServerFacadeTests {
         UserData badUser = new UserData("player2", "pass", "p1@email.com");
         Assertions.assertThrows(ResponseException.class, () -> serverFacade.login(badUser.getUsername(), badUser.getPassword()));
     }
+
+    @Test
+    public void logoutPositive() throws ResponseException {
+        UserData userData = new UserData("player1", "password", "p1@email.com");
+        AuthData authData = serverFacade.register(userData);
+        Assertions.assertDoesNotThrow(() -> serverFacade.logout(authData.getAuthToken()));
+    }
+
+    @Test
+    public void logoutNegative() {
+        Assertions.assertThrows(ResponseException.class, () -> serverFacade.logout("badAuth"));
+    }
 }
