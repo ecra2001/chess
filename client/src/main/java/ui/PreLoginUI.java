@@ -1,6 +1,8 @@
 package ui;
 
 import java.util.Arrays;
+import java.util.zip.DataFormatException;
+
 import model.*;
 import exception.ResponseException;
 import client.ServerFacade;
@@ -26,21 +28,25 @@ public class PreLoginUI {
                 case "quit" -> "quit";
                 default -> help();
             };
-        } catch (ResponseException ex) {
+        } catch (ResponseException | DataFormatException ex) {
             return ex.getMessage();
         }
     }
 
-    public String register(String... params) throws ResponseException {
+    public String register(String... params) throws ResponseException, DataFormatException {
         if (params.length == 3) {
-            var username = params[0];
-            var password = params[1];
-            var email = params[2];
-            UserData userData = new UserData(username, password, email);
-            AuthData authData = facade.register(userData);
-            state.setAuthData(authData);
-            state.setLoggedIn(true);
-            return String.format("Registered and logged in as %s", userData.getUsername());
+            try {
+                var username = params[0];
+                var password = params[1];
+                var email = params[2];
+                UserData userData = new UserData(username, password, email);
+                AuthData authData = facade.register(userData);
+                state.setAuthData(authData);
+                state.setLoggedIn(true);
+                return String.format("Registered and logged in as %s", userData.getUsername());
+            } catch (ResponseException e) {
+                throw new DataFormatException("Username already taken. Try another.");
+            }
         }
         throw new ResponseException(400, "Expected: <USERNAME> <PASSWORD> <EMAIL>");
     }
