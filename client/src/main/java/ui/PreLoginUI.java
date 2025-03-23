@@ -9,13 +9,11 @@ import client.ServerFacade;
 
 public class PreLoginUI {
     private final ServerFacade facade;
-    private final String serverUrl;
     private final State state;
 
     public PreLoginUI(String serverUrl, State state) {
         this.state = state;
         facade = new ServerFacade(serverUrl);
-        this.serverUrl = serverUrl;
     }
 
     public String eval(String input) {
@@ -49,7 +47,7 @@ public class PreLoginUI {
                 throw new DataFormatException("Username already taken. Try another.");
             }
         }
-        throw new ResponseException(400, "Expected: <USERNAME> <PASSWORD> <EMAIL>");
+        throw new ResponseException(400, "Expected: register <USERNAME> <PASSWORD> <EMAIL>");
     }
 
     public String login(String... params) throws ResponseException, DataFormatException {
@@ -60,12 +58,12 @@ public class PreLoginUI {
                 AuthData authData = facade.login(username, password);
                 state.setAuthData(authData);
                 state.setLoggedIn(true);
+                return String.format("Logged in as %s", authData.getUsername());
             } catch (ResponseException e) {
                 throw new DataFormatException("Incorrect Username or password. Try again.");
             }
-
         }
-        throw new ResponseException(400, "Expected: <USERNAME> <PASSWORD>");
+        throw new ResponseException(400, "Expected: login <USERNAME> <PASSWORD>");
     }
 
     public String help() {

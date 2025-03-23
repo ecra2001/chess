@@ -33,6 +33,16 @@ public class PostLoginUI {
     }
 
     public String create(String... params) throws ResponseException {
+        var gameName = params[0];
+        facade.createGame(gameName, state.getAuthToken());
+        return String.format("Created game: %s", gameName);
+    }
+
+    public String list() {
+        return null;
+    }
+
+    public String join(String... params) throws ResponseException {
         return null;
     }
 
