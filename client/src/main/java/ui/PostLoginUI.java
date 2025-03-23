@@ -1,6 +1,8 @@
 package ui;
 
 import java.util.Arrays;
+import java.util.zip.DataFormatException;
+
 import model.*;
 import exception.ResponseException;
 import client.ServerFacade;
@@ -27,15 +29,22 @@ public class PostLoginUI {
                 case "quit" -> "quit";
                 default -> help();
             };
-        } catch (ResponseException ex) {
+        } catch (ResponseException | DataFormatException ex) {
             return ex.getMessage();
         }
     }
 
-    public String create(String... params) throws ResponseException {
-        var gameName = params[0];
-        facade.createGame(gameName, state.getAuthToken());
-        return String.format("Created game: %s", gameName);
+    public String create(String... params) throws ResponseException, DataFormatException {
+        if (params.length == 1) {
+            try {
+                var gameName = params[0];
+                facade.createGame(gameName, state.getAuthToken());
+                return String.format("Created game: %s", gameName);
+            } catch (ResponseException e) {
+                throw new DataFormatException("Error creating game");
+            }
+        }
+        throw new ResponseException(400, "Expected: create <NAME>");
     }
 
     public String list() {
