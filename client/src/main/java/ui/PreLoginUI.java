@@ -8,8 +8,10 @@ import client.ServerFacade;
 public class PreLoginUI {
     private final ServerFacade facade;
     private final String serverUrl;
+    private final State state;
 
-    public PreLoginUI(String serverUrl) {
+    public PreLoginUI(String serverUrl, State state) {
+        this.state = state;
         facade = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
     }
@@ -34,7 +36,10 @@ public class PreLoginUI {
             var username = params[0];
             var password = params[1];
             var email = params[2];
-
+            UserData userData = new UserData(username, password, email);
+            facade.register(userData);
+            state.setLoggedIn(true);
+            return String.format("Registered and logged in as %s", userData.getUsername());
         }
         throw new ResponseException(400, "Expected: <USERNAME> <PASSWORD> <EMAIL>");
     }

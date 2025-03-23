@@ -5,9 +5,20 @@ import static ui.EscapeSequences.*;
 
 public class State {
     private final PreLoginUI preLogin;
+    private final PostLoginUI postLogin;
+    private boolean loggedIn = false;
+
+    public boolean isLoggedIn() {
+        return loggedIn;
+    }
+
+    public void setLoggedIn(boolean loggedIn) {
+        this.loggedIn = loggedIn;
+    }
 
     public State(String serverUrl) {
-        preLogin = new PreLoginUI(serverUrl);
+        preLogin = new PreLoginUI(serverUrl, this);
+        postLogin = new PostLoginUI(serverUrl, this);
     }
 
     public void run() {
@@ -18,8 +29,13 @@ public class State {
             printPrompt();
             String line = scanner.nextLine();
             try {
-                result = preLogin.eval(line);
-                System.out.print(SET_TEXT_COLOR_BLUE + result);
+                if (!loggedIn) {
+                    result = preLogin.eval(line);
+                    System.out.print(SET_TEXT_COLOR_BLUE + result);
+                } else if (loggedIn) {
+                    result = postLogin.eval(line);
+                    System.out.print(SET_TEXT_COLOR_BLUE + result);
+                }
             } catch (Throwable e) {
                 var msg = e.toString();
                 System.out.print(msg);
@@ -28,6 +44,10 @@ public class State {
     }
 
     private void printPrompt() {
-        System.out.print("\n" + SET_TEXT_COLOR_WHITE + ">>> " + SET_TEXT_COLOR_GREEN);
+        if (isLoggedIn()) {
+            System.out.print("\n" + SET_TEXT_COLOR_WHITE + "[LOGGED_IN] >>> " + SET_TEXT_COLOR_GREEN);
+        } else {
+            System.out.print("\n" + SET_TEXT_COLOR_WHITE + "[LOGGED_OUT] >>> " + SET_TEXT_COLOR_GREEN);
+        }
     }
 }
