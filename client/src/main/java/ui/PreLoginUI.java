@@ -6,11 +6,11 @@ import exception.ResponseException;
 import client.ServerFacade;
 
 public class PreLoginUI {
-    private final ServerFacade server;
+    private final ServerFacade facade;
     private final String serverUrl;
 
     public PreLoginUI(String serverUrl) {
-        server = new ServerFacade(serverUrl);
+        facade = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
     }
 
@@ -21,6 +21,7 @@ public class PreLoginUI {
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 case "register" -> register(params);
+                case "quit" -> "quit";
                 default -> help();
             };
         } catch (ResponseException ex) {
@@ -29,7 +30,13 @@ public class PreLoginUI {
     }
 
     public String register(String... params) throws ResponseException {
-        return null;
+        if (params.length == 3) {
+            var username = params[0];
+            var password = params[1];
+            var email = params[2];
+
+        }
+        throw new ResponseException(400, "Expected: <USERNAME> <PASSWORD> <EMAIL>");
     }
 
     public String help() {

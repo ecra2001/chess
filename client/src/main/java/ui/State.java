@@ -11,7 +11,7 @@ public class State {
     }
 
     public void run() {
-        System.out.println("\uD83D\uDC36 Welcome to 240 Chess. Type Help to get started.");
+        System.out.println("Welcome to 240 Chess. Type Help to get started.");
         Scanner scanner = new Scanner(System.in);
         var result = "";
         while (!result.equals("quit")) {
@@ -28,6 +28,6 @@ public class State {
     }
 
     private void printPrompt() {
-        System.out.print("\n" + RESET + ">>> " + SET_TEXT_COLOR_GREEN);
+        System.out.print("\n" + SET_TEXT_COLOR_WHITE + ">>> " + SET_TEXT_COLOR_GREEN);
     }
 }
