@@ -25,6 +25,7 @@ public class PreLoginUI {
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 case "register" -> register(params);
+                case "login" -> login(params);
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -49,6 +50,22 @@ public class PreLoginUI {
             }
         }
         throw new ResponseException(400, "Expected: <USERNAME> <PASSWORD> <EMAIL>");
+    }
+
+    public String login(String... params) throws ResponseException, DataFormatException {
+        if (params.length == 2) {
+            try {
+                var username = params[0];
+                var password = params[1];
+                AuthData authData = facade.login(username, password);
+                state.setAuthData(authData);
+                state.setLoggedIn(true);
+            } catch (ResponseException e) {
+                throw new DataFormatException("Incorrect Username or password. Try again.");
+            }
+
+        }
+        throw new ResponseException(400, "Expected: <USERNAME> <PASSWORD>");
     }
 
     public String help() {
