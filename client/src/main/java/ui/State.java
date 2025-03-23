@@ -1,6 +1,7 @@
 package ui;
 
 import java.util.Scanner;
+import static ui.EscapeSequences.*;
 
 public class State {
     private final PreLoginUI preLogin;
@@ -17,8 +18,8 @@ public class State {
             printPrompt();
             String line = scanner.nextLine();
             try {
-                //result = preLogin.eval(line);
-                //System.out.print(BLUE + result);
+                result = preLogin.eval(line);
+                System.out.print(SET_TEXT_COLOR_BLUE + result);
             } catch (Throwable e) {
                 var msg = e.toString();
                 System.out.print(msg);
@@ -27,6 +28,6 @@ public class State {
     }
 
     private void printPrompt() {
-        //System.out.print("\n" + RESET + ">>> " + GREEN);
+        System.out.print("\n" + RESET + ">>> " + SET_TEXT_COLOR_GREEN);
     }
 }
