@@ -23,6 +23,7 @@ public class PostLoginUI {
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 case "create" -> create(params);
+                case "logout" -> logout();
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -33,6 +34,12 @@ public class PostLoginUI {
 
     public String create(String... params) throws ResponseException {
         return null;
+    }
+
+    public String logout() throws ResponseException {
+        state.setLoggedIn(false);
+        facade.logout(state.getAuthToken());
+        return "logged out";
     }
 
     public String help() {

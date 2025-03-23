@@ -2,11 +2,13 @@ package ui;
 
 import java.util.Scanner;
 import static ui.EscapeSequences.*;
+import model.*;
 
 public class State {
     private final PreLoginUI preLogin;
     private final PostLoginUI postLogin;
     private boolean loggedIn = false;
+    private AuthData authData;
 
     public boolean isLoggedIn() {
         return loggedIn;
@@ -14,6 +16,14 @@ public class State {
 
     public void setLoggedIn(boolean loggedIn) {
         this.loggedIn = loggedIn;
+    }
+
+    public void setAuthData(AuthData authData) {
+        this.authData = authData;
+    }
+
+    public String getAuthToken() {
+        return authData.getAuthToken();
     }
 
     public State(String serverUrl) {
@@ -29,10 +39,10 @@ public class State {
             printPrompt();
             String line = scanner.nextLine();
             try {
-                if (!loggedIn) {
+                if (!isLoggedIn()) {
                     result = preLogin.eval(line);
                     System.out.print(SET_TEXT_COLOR_BLUE + result);
-                } else if (loggedIn) {
+                } else if (isLoggedIn()) {
                     result = postLogin.eval(line);
                     System.out.print(SET_TEXT_COLOR_BLUE + result);
                 }

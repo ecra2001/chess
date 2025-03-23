@@ -37,7 +37,8 @@ public class PreLoginUI {
             var password = params[1];
             var email = params[2];
             UserData userData = new UserData(username, password, email);
-            facade.register(userData);
+            AuthData authData = facade.register(userData);
+            state.setAuthData(authData);
             state.setLoggedIn(true);
             return String.format("Registered and logged in as %s", userData.getUsername());
         }
