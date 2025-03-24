@@ -94,9 +94,9 @@ public class PostLoginUI {
 
     public String observe(String... params) throws ResponseException {
         if (params.length == 1) {
-            var gameNumber = Integer.parseInt(params[0]) - 1;
-            var games = facade.listGames(state.getAuthToken());
-            if (games.isEmpty() || gameNumber < 0 || gameNumber >= games.size()) {
+            var gameNum = Integer.parseInt(params[0]) - 1;
+            var allGames = facade.listGames(state.getAuthToken());
+            if (allGames.isEmpty() || gameNum < 0 || gameNum >= allGames.size()) {
                 return "Game doesn't exist. Enter 'list' to see full list of games";
             }
             gameplayUI.printBoard();
