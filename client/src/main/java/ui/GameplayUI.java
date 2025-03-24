@@ -14,6 +14,13 @@ public class GameplayUI {
     void printBoard() {
         var board = new StringBuilder();
         board.append(letterRow("black"));
+
+        board.append(letterRow("black"));
+
+        board.append(letterRow("white"));
+
+        board.append(letterRow("white"));
+        System.out.println(board);
     }
 
     private String letterRow(String color) {
@@ -33,7 +40,24 @@ public class GameplayUI {
     }
 
     private String gameRow(int row, String color) {
-        return null;
+        var board = new StringBuilder();
+        board.append(SET_BG_COLOR_DARK_GREY);
+        board.append(SET_TEXT_COLOR_BLACK);
+        board.append(String.format(" %d ", row));
+        for (int i = 1; i < 9; i++) {
+            if (Objects.equals(color, "black")) {
+                i = i * -1 + 9;
+                board.append(squareColor(row, i));
+                board.append(piece(row, i));
+            }
+        }
+        board.append(SET_BG_COLOR_DARK_GREY);
+        board.append(SET_TEXT_COLOR_BLACK);
+        board.append(String.format(" %d ", row));
+        board.append("\n");
+        board.append(RESET_BG_COLOR);
+        board.append(RESET_TEXT_COLOR);
+        return board.toString();
     }
 
     private String squareColor(int row, int col) {
