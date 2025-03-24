@@ -27,6 +27,8 @@ public class PostLoginUI {
                 case "create" -> create(params);
                 case "list" -> list();
                 case "logout" -> logout();
+                case "join" -> join(params);
+                case "observe" -> observe(params);
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -65,21 +67,23 @@ public class PostLoginUI {
     }
 
     public String join(String... params) throws ResponseException, DataFormatException {
-        var gameNumber = Integer.parseInt(params[0]) - 1;
-        var color = params[1];
-        if (!color.equalsIgnoreCase("WHITE") && !color.equalsIgnoreCase("BLACK")) {
-            return "Invalid color: Select [WHITE] or [BLACK]";
-        }
-        var games = facade.listGames(state.getAuthToken());
-        if (games.isEmpty() || gameNumber < 0 || gameNumber >= games.size()) {
-            return "Game doesn't exist. Enter 'list' to see full list of games";
-        }
-        GameData gameSelection = games.get(gameNumber);
-        try {
-            // might need to specify color in CAPS
-            facade.joinGame(state.getAuthToken(), gameSelection.getGameID(), color);
-        } catch (ResponseException e) {
-            throw new DataFormatException("Failed to join: Either color taken or game no longer exists.");
+        if (params.length == 2) {
+            var gameNumber = Integer.parseInt(params[0]) - 1;
+            var color = params[1];
+            if (!color.equalsIgnoreCase("WHITE") && !color.equalsIgnoreCase("BLACK")) {
+                return "Invalid color: Select [WHITE] or [BLACK]";
+            }
+            var games = facade.listGames(state.getAuthToken());
+            if (games.isEmpty() || gameNumber < 0 || gameNumber >= games.size()) {
+                return "Game doesn't exist. Enter 'list' to see full list of games";
+            }
+            GameData gameSelection = games.get(gameNumber);
+            try {
+                facade.joinGame(state.getAuthToken(), gameSelection.getGameID(), color);
+                return "joined game"; //temporary
+            } catch (ResponseException e) {
+                throw new DataFormatException("Failed to join: Either color taken or game no longer exists.");
+            }
         }
         throw new DataFormatException("Join error");
     }
@@ -99,6 +103,7 @@ public class PostLoginUI {
                 create <NAME>
                 list
                 join <ID> [BLACK|WHITE]
+                observe <ID>
                 logout
                 quit
                 help
