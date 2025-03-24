@@ -3,12 +3,14 @@ package ui;
 import java.util.Scanner;
 import static ui.EscapeSequences.*;
 import model.*;
+import chess.*;
 
 public class State {
     private final PreLoginUI preLogin;
     private final PostLoginUI postLogin;
     private boolean loggedIn = false;
     private AuthData authData;
+    ChessBoard board;
 
     public boolean isLoggedIn() {
         return loggedIn;
@@ -27,8 +29,9 @@ public class State {
     }
 
     public State(String serverUrl) {
+        this.board = new ChessBoard();
         preLogin = new PreLoginUI(serverUrl, this);
-        postLogin = new PostLoginUI(serverUrl, this);
+        postLogin = new PostLoginUI(serverUrl, this, board);
     }
 
     public void run() {

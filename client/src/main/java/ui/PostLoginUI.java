@@ -6,16 +6,19 @@ import com.google.gson.Gson;
 import model.*;
 import exception.ResponseException;
 import client.ServerFacade;
+import chess.*;
 
 public class PostLoginUI {
     private final ServerFacade facade;
     private final String serverUrl;
     private final State state;
+    private final GameplayUI gameplayUI;
 
-    public PostLoginUI(String serverUrl, State state) {
+    public PostLoginUI(String serverUrl, State state, ChessBoard board) {
         this.state = state;
         facade = new ServerFacade(serverUrl);
         this.serverUrl = serverUrl;
+        this.gameplayUI = new GameplayUI(board);
     }
 
     public String eval(String input) {
@@ -80,6 +83,7 @@ public class PostLoginUI {
             GameData gameSelection = games.get(gameNumber);
             try {
                 facade.joinGame(state.getAuthToken(), gameSelection.getGameID(), color);
+                gameplayUI.printBoard();
                 return "joined game"; //temporary
             } catch (ResponseException e) {
                 throw new DataFormatException("Failed to join: Either color taken or game no longer exists.");

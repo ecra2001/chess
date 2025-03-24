@@ -14,11 +14,15 @@ public class GameplayUI {
     void printBoard() {
         var board = new StringBuilder();
         board.append(letterRow("black"));
-
+        for (int i = 8; i > 0; i--) {
+            board.append(gameRow(i, "black"));
+        }
         board.append(letterRow("black"));
 
         board.append(letterRow("white"));
-
+        for (int i = 1; i < 9; i++) {
+            board.append(gameRow(i, "white"));
+        }
         board.append(letterRow("white"));
         System.out.println(board);
     }
@@ -61,10 +65,38 @@ public class GameplayUI {
     }
 
     private String squareColor(int row, int col) {
-        return null;
+        boolean darkSquare = (row + col) % 2 == 0;
+        if (darkSquare) {
+            return SET_BG_COLOR_DARK_GREEN;
+        } else {
+            return SET_BG_COLOR_GREEN;
+        }
     }
 
-    private String piece(int row, int col) {
-        return null;
+    private String piece(int row, int column) {
+        ChessPosition position = new ChessPosition(row, column);
+        ChessPiece piece = board.getPiece(position);
+        if (piece == null) {
+            return EMPTY;
+        }
+
+        return switch (piece.getTeamColor()) {
+            case WHITE -> switch (piece.getPieceType()) {
+                case QUEEN -> WHITE_QUEEN;
+                case KING -> WHITE_KING;
+                case BISHOP -> WHITE_BISHOP;
+                case KNIGHT -> WHITE_KNIGHT;
+                case ROOK -> WHITE_ROOK;
+                case PAWN -> WHITE_PAWN;
+            };
+            case BLACK -> switch (piece.getPieceType()) {
+                case QUEEN -> BLACK_QUEEN;
+                case KING -> BLACK_KING;
+                case BISHOP -> BLACK_BISHOP;
+                case KNIGHT -> BLACK_KNIGHT;
+                case ROOK -> BLACK_ROOK;
+                case PAWN -> BLACK_PAWN;
+            };
+        };
     }
 }
