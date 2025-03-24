@@ -84,7 +84,7 @@ public class PostLoginUI {
             try {
                 facade.joinGame(state.getAuthToken(), gameSelection.getGameID(), color);
                 gameplayUI.printBoard();
-                return "joined game"; //temporary
+                return "joined game";
             } catch (ResponseException e) {
                 throw new DataFormatException("Failed to join: Either color taken or game no longer exists.");
             }
@@ -93,7 +93,16 @@ public class PostLoginUI {
     }
 
     public String observe(String... params) throws ResponseException {
-        return null;
+        if (params.length == 1) {
+            var gameNumber = Integer.parseInt(params[0]) - 1;
+            var games = facade.listGames(state.getAuthToken());
+            if (games.isEmpty() || gameNumber < 0 || gameNumber >= games.size()) {
+                return "Game doesn't exist. Enter 'list' to see full list of games";
+            }
+            gameplayUI.printBoard();
+            return "observing game";
+        }
+        throw new ResponseException(400, "Expected: observe <ID>");
     }
 
     public String logout() throws ResponseException {

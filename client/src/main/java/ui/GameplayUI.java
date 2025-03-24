@@ -69,9 +69,9 @@ public class GameplayUI {
     private String squareColor(int row, int col) {
         boolean darkSquare = (row + col) % 2 == 0;
         if (darkSquare) {
-            return SET_BG_COLOR_DARK_GREEN;
+            return SET_BG_COLOR_LIGHT_GREY;
         } else {
-            return SET_BG_COLOR_GREEN;
+            return SET_BG_COLOR_WHITE;
         }
     }
 

@@ -59,7 +59,7 @@ public class State {
 
     private void printPrompt() {
         if (isLoggedIn()) {
-            System.out.print("\n" + SET_TEXT_COLOR_WHITE + "[LOGGED_IN] >>> " + SET_TEXT_COLOR_GREEN);
+            System.out.print("\n" + SET_TEXT_COLOR_YELLOW + "[LOGGED_IN] >>> " + SET_TEXT_COLOR_GREEN);
         } else {
             System.out.print("\n" + SET_TEXT_COLOR_WHITE + "[LOGGED_OUT] >>> " + SET_TEXT_COLOR_GREEN);
         }
