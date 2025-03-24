@@ -83,7 +83,9 @@ public class ServerFacadeTests {
     public void listGamesPositive() throws ResponseException {
         UserData userData = new UserData("player1", "password", "p1@email.com");
         AuthData authData = serverFacade.register(userData);
+        Assertions.assertEquals(0, serverFacade.listGames(authData.getAuthToken()).size());
         serverFacade.createGame("game1", authData.getAuthToken());
+        Assertions.assertEquals(1, serverFacade.listGames(authData.getAuthToken()).size());
         Assertions.assertDoesNotThrow(() -> serverFacade.listGames(authData.getAuthToken()));
     }
 

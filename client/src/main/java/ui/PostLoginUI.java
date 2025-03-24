@@ -2,7 +2,7 @@ package ui;
 
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
-
+import com.google.gson.Gson;
 import model.*;
 import exception.ResponseException;
 import client.ServerFacade;
@@ -25,6 +25,7 @@ public class PostLoginUI {
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 case "create" -> create(params);
+                case "list" -> list();
                 case "logout" -> logout();
                 case "quit" -> "quit";
                 default -> help();
@@ -47,8 +48,18 @@ public class PostLoginUI {
         throw new ResponseException(400, "Expected: create <NAME>");
     }
 
-    public String list() {
-        return null;
+    public String list() throws ResponseException {
+        var games = facade.listGames(state.getAuthToken());
+        if (games.isEmpty()) {
+            return "No games available.";
+        }
+        var result = new StringBuilder("Available Games:\n");
+        for (var game : games) {
+            result.append(String.format("ID: %d, Name: %s, White: %s, Black: %s%n",
+                    game.getGameID(), game.getGameName(), game.getWhiteUsername(), game.getBlackUsername()));
+        }
+
+        return result.toString();
     }
 
     public String join(String... params) throws ResponseException {

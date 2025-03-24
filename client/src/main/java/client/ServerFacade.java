@@ -5,6 +5,7 @@ import exception.ResponseException;
 import model.*;
 import java.io.*;
 import java.net.*;
+import java.util.List;
 import java.util.HashSet;
 import java.util.Map;
 
@@ -31,12 +32,12 @@ public class ServerFacade {
         this.makeRequest("DELETE", path, null, null, authToken);
     }
 
-    public HashSet<GameData> listGames(String authToken) throws ResponseException {
+    public List<GameData> listGames(String authToken) throws ResponseException {
         var path = "/game";
-        record listGameResponse(HashSet<GameData> gameList) {
+        record listGameResponse(List<GameData> games) {
         }
         var response = this.makeRequest("GET", path, null, listGameResponse.class, authToken);
-        return response.gameList();
+        return response.games();
     }
 
     public int createGame(String gameName, String authToken) throws ResponseException {
