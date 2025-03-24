@@ -30,6 +30,7 @@ public class State {
 
     public State(String serverUrl) {
         this.board = new ChessBoard();
+        board.resetBoard();
         preLogin = new PreLoginUI(serverUrl, this);
         postLogin = new PostLoginUI(serverUrl, this, board);
     }

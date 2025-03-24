@@ -14,13 +14,13 @@ public class GameplayUI {
     void printBoard() {
         var board = new StringBuilder();
         board.append(letterRow("black"));
-        for (int i = 8; i > 0; i--) {
+        for (int i = 1; i < 9; i++) {
             board.append(gameRow(i, "black"));
         }
         board.append(letterRow("black"));
-
+        board.append("\n");
         board.append(letterRow("white"));
-        for (int i = 1; i < 9; i++) {
+        for (int i = 8; i > 0; i--) {
             board.append(gameRow(i, "white"));
         }
         board.append(letterRow("white"));
@@ -33,13 +33,12 @@ public class GameplayUI {
         board.append(SET_TEXT_COLOR_BLACK);
         if (Objects.equals(color, "white")) {
             board.append("    a  b  c  d  e  f  g  h    ");
-            board.append("\n");
         } else if (Objects.equals(color, "black")) {
             board.append("    h  g  f  e  d  c  b  a    ");
-            board.append("\n");
         }
         board.append(RESET_BG_COLOR);
         board.append(RESET_TEXT_COLOR);
+        board.append("\n");
         return board.toString();
     }
 
@@ -50,7 +49,10 @@ public class GameplayUI {
         board.append(String.format(" %d ", row));
         for (int i = 1; i < 9; i++) {
             if (Objects.equals(color, "black")) {
-                i = i * -1 + 9;
+                int col = i * -1 + 9;
+                board.append(squareColor(row, col));
+                board.append(piece(row, col));
+            } else {
                 board.append(squareColor(row, i));
                 board.append(piece(row, i));
             }
@@ -58,9 +60,9 @@ public class GameplayUI {
         board.append(SET_BG_COLOR_DARK_GREY);
         board.append(SET_TEXT_COLOR_BLACK);
         board.append(String.format(" %d ", row));
-        board.append("\n");
         board.append(RESET_BG_COLOR);
         board.append(RESET_TEXT_COLOR);
+        board.append("\n");
         return board.toString();
     }
 
