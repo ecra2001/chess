@@ -64,8 +64,24 @@ public class PostLoginUI {
         return result.toString();
     }
 
-    public String join(String... params) throws ResponseException {
-        return null;
+    public String join(String... params) throws ResponseException, DataFormatException {
+        var gameNumber = Integer.parseInt(params[0]) - 1;
+        var color = params[1];
+        if (!color.equalsIgnoreCase("WHITE") && !color.equalsIgnoreCase("BLACK")) {
+            return "Invalid color: Select [WHITE] or [BLACK]";
+        }
+        var games = facade.listGames(state.getAuthToken());
+        if (games.isEmpty() || gameNumber < 0 || gameNumber >= games.size()) {
+            return "Game doesn't exist. Enter 'list' to see full list of games";
+        }
+        GameData gameSelection = games.get(gameNumber);
+        try {
+            // might need to specify color in CAPS
+            facade.joinGame(state.getAuthToken(), gameSelection.getGameID(), color);
+        } catch (ResponseException e) {
+            throw new DataFormatException("Failed to join: Either color taken or game no longer exists.");
+        }
+        throw new DataFormatException("Join error");
     }
 
     public String observe(String... params) throws ResponseException {
