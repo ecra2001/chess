@@ -54,15 +54,21 @@ public class PostLoginUI {
             return "No games available.";
         }
         var result = new StringBuilder("Available Games:\n");
+        int gameNumber = 0;
         for (var game : games) {
-            result.append(String.format("ID: %d, Name: %s, White: %s, Black: %s%n",
-                    game.getGameID(), game.getGameName(), game.getWhiteUsername(), game.getBlackUsername()));
+            gameNumber += 1;
+            result.append(String.format("[%d] - Name: %s, White: %s, Black: %s%n",
+                    gameNumber, game.getGameName(), game.getWhiteUsername(), game.getBlackUsername()));
         }
 
         return result.toString();
     }
 
     public String join(String... params) throws ResponseException {
+        return null;
+    }
+
+    public String observe(String... params) throws ResponseException {
         return null;
     }
 
