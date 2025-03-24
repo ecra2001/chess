@@ -45,7 +45,7 @@ public class State {
                 } else if (isLoggedIn()) {
                     result = postLogin.eval(line);
                     System.out.print(SET_TEXT_COLOR_BLUE + result);
-                }
+                } // need to implement switch to GameplayUI
             } catch (Throwable e) {
                 var msg = e.toString();
                 System.out.print(msg);
