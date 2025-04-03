@@ -10,15 +10,15 @@ import chess.*;
 
 public class PostLoginUI {
     private final ServerFacade facade;
-    private final String serverUrl;
+    //private final String serverUrl;
     private final State state;
-    private final GameplayUI gameplayUI;
+    //private final GameplayUI gameplayUI;
 
     public PostLoginUI(String serverUrl, State state, ChessBoard board) {
         this.state = state;
         facade = new ServerFacade(serverUrl);
-        this.serverUrl = serverUrl;
-        this.gameplayUI = new GameplayUI(board);
+        //this.serverUrl = serverUrl;
+        //this.gameplayUI = new GameplayUI(board);
     }
 
     public String eval(String input) {
@@ -83,7 +83,8 @@ public class PostLoginUI {
             GameData gameSelection = games.get(gameNumber);
             try {
                 facade.joinGame(state.getAuthToken(), gameSelection.getGameID(), color);
-                gameplayUI.printBoard();
+                //gameplayUI.printBoard();
+                state.setInGame(true);
                 return "joined game";
             } catch (ResponseException e) {
                 throw new DataFormatException("Failed to join: Either color taken or game no longer exists.");
@@ -99,7 +100,8 @@ public class PostLoginUI {
             if (allGames.isEmpty() || gameNum < 0 || gameNum >= allGames.size()) {
                 return "Game doesn't exist. Enter 'list' to see full list of games";
             }
-            gameplayUI.printBoard();
+            //gameplayUI.printBoard();
+            state.setInGame(true);
             return "observing game";
         }
         throw new ResponseException(400, "Expected: observe <ID>");

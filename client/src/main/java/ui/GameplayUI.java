@@ -1,14 +1,38 @@
 package ui;
 import chess.*;
-
+import java.util.Arrays;
+import java.util.zip.DataFormatException;
+import com.google.gson.Gson;
+import model.*;
+import exception.ResponseException;
+import client.ServerFacade;
 import java.util.Objects;
 
 import static ui.EscapeSequences.*;
 public class GameplayUI {
 
     ChessBoard board;
-    GameplayUI(ChessBoard board) {
+    //private final ServerFacade facade;
+    private final State state;
+    GameplayUI(String serverUrl, State state, ChessBoard board) {
         this.board = board;
+        this.state = state;
+        //facade = new ServerFacade(serverUrl);
+    }
+
+    public String eval(String input) {
+        // try {
+            var tokens = input.toLowerCase().split(" ");
+            var cmd = (tokens.length > 0) ? tokens[0] : "help";
+            var params = Arrays.copyOfRange(tokens, 1, tokens.length);
+            return switch (cmd) {
+                case "leave" -> leave();
+                case "quit" -> "quit";
+                default -> help();
+            };
+        // } catch (ResponseException | DataFormatException ex) {
+        //     return ex.getMessage();
+        // }
     }
 
     void printBoard() {
@@ -100,5 +124,22 @@ public class GameplayUI {
                 case PAWN -> BLACK_PAWN;
             };
         };
+    }
+
+    public String leave() {
+        state.setInGame(false);
+        return "left game";
+    }
+
+    public String help() {
+        return """
+                redraw
+                leave
+                move
+                resign
+                highlight
+                quit
+                help
+                """;
     }
 }
