@@ -12,12 +12,10 @@ import static ui.EscapeSequences.*;
 public class GameplayUI {
 
     ChessBoard board;
-    //private final ServerFacade facade;
     private final State state;
     GameplayUI(String serverUrl, State state, ChessBoard board) {
         this.board = board;
         this.state = state;
-        //facade = new ServerFacade(serverUrl);
     }
 
     public String eval(String input) {

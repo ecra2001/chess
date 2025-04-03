@@ -2,7 +2,7 @@ package ui;
 
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
-import com.google.gson.Gson;
+
 import model.*;
 import exception.ResponseException;
 import client.ServerFacade;
@@ -10,15 +10,13 @@ import chess.*;
 
 public class PostLoginUI {
     private final ServerFacade facade;
-    //private final String serverUrl;
     private final State state;
-    //private final GameplayUI gameplayUI;
+    private final GameplayUI gameplayUI;
 
     public PostLoginUI(String serverUrl, State state, ChessBoard board) {
         this.state = state;
         facade = new ServerFacade(serverUrl);
-        //this.serverUrl = serverUrl;
-        //this.gameplayUI = new GameplayUI(board);
+        this.gameplayUI = new GameplayUI(serverUrl, state, board);
     }
 
     public String eval(String input) {
@@ -83,7 +81,7 @@ public class PostLoginUI {
             GameData gameSelection = games.get(gameNumber);
             try {
                 facade.joinGame(state.getAuthToken(), gameSelection.getGameID(), color);
-                //gameplayUI.printBoard();
+                gameplayUI.printBoard();
                 state.setInGame(true);
                 return "joined game";
             } catch (ResponseException e) {
@@ -100,7 +98,7 @@ public class PostLoginUI {
             if (allGames.isEmpty() || gameNum < 0 || gameNum >= allGames.size()) {
                 return "Game doesn't exist. Enter 'list' to see full list of games";
             }
-            //gameplayUI.printBoard();
+            gameplayUI.printBoard();
             state.setInGame(true);
             return "observing game";
         }
