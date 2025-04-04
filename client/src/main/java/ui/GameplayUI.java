@@ -52,7 +52,7 @@ public class GameplayUI {
     private String letterRow(String color) {
         var board = new StringBuilder();
         board.append(SET_BG_COLOR_DARK_GREY);
-        board.append(SET_TEXT_COLOR_BLACK);
+        board.append(SET_TEXT_COLOR_WHITE);
         if (Objects.equals(color, "white")) {
             board.append("    a  b  c  d  e  f  g  h    ");
         } else if (Objects.equals(color, "black")) {
@@ -67,7 +67,7 @@ public class GameplayUI {
     private String gameRow(int row, String color) {
         var board = new StringBuilder();
         board.append(SET_BG_COLOR_DARK_GREY);
-        board.append(SET_TEXT_COLOR_BLACK);
+        board.append(SET_TEXT_COLOR_WHITE);
         board.append(String.format(" %d ", row));
         for (int i = 1; i < 9; i++) {
             if (Objects.equals(color, "black")) {
