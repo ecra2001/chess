@@ -5,15 +5,17 @@ import static ui.EscapeSequences.*;
 import model.*;
 import chess.*;
 import client.ServerFacade;
+import client.NotificationHandler;
+import websocket.messages.ServerMessage;
 
-public class State {
+public class State implements NotificationHandler{
     private final PreLoginUI preLogin;
     private final PostLoginUI postLogin;
     private final GameplayUI gameplay;
     private boolean loggedIn = false;
     private boolean inGame = false;
     private AuthData authData;
-    ChessBoard board;
+    // ChessBoard board;
     GameData gameData;
 
     public boolean isLoggedIn() {
@@ -41,10 +43,10 @@ public class State {
 
     public State(String serverUrl) {
         ServerFacade server = new ServerFacade(serverUrl);
-        this.board = new ChessBoard();
-        board.resetBoard();
+        //this.board = new ChessBoard();
+        //board.resetBoard();
         preLogin = new PreLoginUI(server, this);
-        postLogin = new PostLoginUI(server, this);
+        postLogin = new PostLoginUI(server, this, this);
         gameplay = new GameplayUI(server, this, gameData);
     }
 
@@ -81,5 +83,10 @@ public class State {
         } else {
             System.out.print("\n" + SET_TEXT_COLOR_WHITE + "[LOGGED_OUT] >>> " + SET_TEXT_COLOR_GREEN);
         }
+    }
+
+    @Override
+    public void notify(ServerMessage notification) {
+
     }
 }

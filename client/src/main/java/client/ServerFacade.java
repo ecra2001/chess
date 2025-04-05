@@ -16,6 +16,10 @@ public class ServerFacade {
         serverUrl = url;
     }
 
+    public String getServerUrl() {
+        return serverUrl;
+    }
+
     public AuthData register(UserData userData) throws ResponseException {
         var path = "/user";
         return this.makeRequest("POST", path, userData, AuthData.class, null);

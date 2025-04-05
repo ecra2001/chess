@@ -3,6 +3,8 @@ package ui;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
 
+import client.WebSocketFacade;
+import client.NotificationHandler;
 import model.*;
 import exception.ResponseException;
 import client.ServerFacade;
@@ -10,11 +12,16 @@ import chess.*;
 
 public class PostLoginUI {
     ServerFacade facade;
+    private final String serverUrl;
+    private final NotificationHandler notificationHandler;
+    private WebSocketFacade ws;
     private final State state;
 
-    public PostLoginUI(ServerFacade facade, State state) {
+    public PostLoginUI(ServerFacade facade, State state, NotificationHandler notificationHandler) {
         this.state = state;
         this.facade = facade;
+        serverUrl = facade.getServerUrl();
+        this.notificationHandler = notificationHandler;
     }
 
     public String eval(String input) {
@@ -79,6 +86,8 @@ public class PostLoginUI {
             GameData gameSelection = games.get(gameNumber);
             try {
                 facade.joinGame(state.getAuthToken(), gameSelection.getGameID(), color);
+                ws = new WebSocketFacade(serverUrl, notificationHandler);
+                ws.connect(state.getAuthToken(), gameSelection.getGameID());
                 //gameplayUI.printBoard();
                 state.setInGame(true);
                 return "joined game";
@@ -96,6 +105,9 @@ public class PostLoginUI {
             if (allGames.isEmpty() || gameNum < 0 || gameNum >= allGames.size()) {
                 return "Game doesn't exist. Enter 'list' to see full list of games";
             }
+            GameData gameSelection = allGames.get(gameNum);
+            ws = new WebSocketFacade(serverUrl, notificationHandler);
+            ws.connect(state.getAuthToken(), gameSelection.getGameID());
             //gameplayUI.printBoard();
             state.setInGame(true);
             return "observing game";
