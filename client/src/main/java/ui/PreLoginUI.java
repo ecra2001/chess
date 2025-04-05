@@ -8,12 +8,12 @@ import exception.ResponseException;
 import client.ServerFacade;
 
 public class PreLoginUI {
-    private final ServerFacade facade;
+    ServerFacade facade;
     private final State state;
 
-    public PreLoginUI(String serverUrl, State state) {
+    public PreLoginUI(ServerFacade facade, State state) {
         this.state = state;
-        facade = new ServerFacade(serverUrl);
+        this.facade = facade;
     }
 
     public String eval(String input) {

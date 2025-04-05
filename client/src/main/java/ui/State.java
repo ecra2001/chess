@@ -4,6 +4,7 @@ import java.util.Scanner;
 import static ui.EscapeSequences.*;
 import model.*;
 import chess.*;
+import client.ServerFacade;
 
 public class State {
     private final PreLoginUI preLogin;
@@ -13,6 +14,7 @@ public class State {
     private boolean inGame = false;
     private AuthData authData;
     ChessBoard board;
+    GameData gameData;
 
     public boolean isLoggedIn() {
         return loggedIn;
@@ -38,11 +40,12 @@ public class State {
     }
 
     public State(String serverUrl) {
+        ServerFacade server = new ServerFacade(serverUrl);
         this.board = new ChessBoard();
         board.resetBoard();
-        preLogin = new PreLoginUI(serverUrl, this);
-        postLogin = new PostLoginUI(serverUrl, this, board);
-        gameplay = new GameplayUI(serverUrl, this, board);
+        preLogin = new PreLoginUI(server, this);
+        postLogin = new PostLoginUI(server, this);
+        gameplay = new GameplayUI(server, this, gameData);
     }
 
     public void run() {

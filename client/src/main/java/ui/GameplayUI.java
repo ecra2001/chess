@@ -7,14 +7,21 @@ import model.*;
 import exception.ResponseException;
 import client.ServerFacade;
 import java.util.Objects;
+import java.util.Collection;
+import java.util.HashSet;
 
 import static ui.EscapeSequences.*;
 public class GameplayUI {
 
-    ChessBoard board;
+    ChessGame game;
+    int gameID;
     private final State state;
-    GameplayUI(String serverUrl, State state, ChessBoard board) {
-        this.board = board;
+    ServerFacade facade;
+    GameplayUI(ServerFacade facade, State state, GameData gameData) {
+        this.facade = facade;
+        this.game = gameData.getGame();
+        this.gameID = gameData.getGameID();
+
         this.state = state;
     }
 
@@ -33,19 +40,30 @@ public class GameplayUI {
         // }
     }
 
-    void printBoard() {
+    void printBoard(ChessGame.TeamColor color, ChessPosition selectedPos) {
         var board = new StringBuilder();
-        board.append(letterRow("black"));
-        for (int i = 1; i < 9; i++) {
-            board.append(gameRow(i, "black"));
+
+        Collection<ChessMove> possibleMoves = selectedPos != null ? game.validMoves(selectedPos) : null;
+        HashSet<ChessPosition> possibleSquares = new HashSet<>(possibleMoves != null ? possibleMoves.size() : 0);
+        if (possibleMoves != null) {
+            for (ChessMove move : possibleMoves) {
+                possibleSquares.add(move.getEndPosition());
+            }
         }
-        board.append(letterRow("black"));
-        board.append("\n");
-        board.append(letterRow("white"));
-        for (int i = 8; i > 0; i--) {
-            board.append(gameRow(i, "white"));
+
+        if (color == ChessGame.TeamColor.BLACK) {
+            board.append(letterRow("black"));
+            for (int i = 1; i < 9; i++) {
+                board.append(gameRow(i, "black"));
+            }
+            board.append(letterRow("black"));
+        } else {
+            board.append(letterRow("white"));
+            for (int i = 8; i > 0; i--) {
+                board.append(gameRow(i, "white"));
+            }
+            board.append(letterRow("white"));
         }
-        board.append(letterRow("white"));
         System.out.println(board);
     }
 
@@ -99,7 +117,7 @@ public class GameplayUI {
 
     private String piece(int row, int column) {
         ChessPosition position = new ChessPosition(row, column);
-        ChessPiece piece = board.getPiece(position);
+        ChessPiece piece = game.getBoard().getPiece(position);
         if (piece == null) {
             return EMPTY;
         }

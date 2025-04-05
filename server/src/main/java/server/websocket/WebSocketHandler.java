@@ -43,7 +43,10 @@ public class WebSocketHandler {
     }
 
     private void handleConnect(ConnectCommand cmd, Session session) throws IOException {
+        connections.add(cmd.getAuthToken(), session);
 
+        NotificationMessage notif = new NotificationMessage("Player joined the game.");
+        connections.broadcast(cmd.getAuthToken(), new Gson().toJson(notif));
     }
 
     private void handleMakeMove(MakeMoveCommand cmd) throws IOException {
@@ -51,10 +54,14 @@ public class WebSocketHandler {
     }
 
     private void handleLeave(LeaveCommand cmd) throws IOException {
+        connections.remove(cmd.getAuthToken());
 
+        NotificationMessage notif = new NotificationMessage("Player left the game.");
+        connections.broadcast(cmd.getAuthToken(), new Gson().toJson(notif));
     }
 
     private void handleResign(ResignCommand cmd) throws IOException {
-
+        NotificationMessage notif = new NotificationMessage("Player has resigned. Game over.");
+        connections.broadcast(cmd.getAuthToken(), new Gson().toJson(notif));
     }
 }

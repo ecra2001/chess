@@ -9,14 +9,12 @@ import client.ServerFacade;
 import chess.*;
 
 public class PostLoginUI {
-    private final ServerFacade facade;
+    ServerFacade facade;
     private final State state;
-    private final GameplayUI gameplayUI;
 
-    public PostLoginUI(String serverUrl, State state, ChessBoard board) {
+    public PostLoginUI(ServerFacade facade, State state) {
         this.state = state;
-        facade = new ServerFacade(serverUrl);
-        this.gameplayUI = new GameplayUI(serverUrl, state, board);
+        this.facade = facade;
     }
 
     public String eval(String input) {
@@ -81,7 +79,7 @@ public class PostLoginUI {
             GameData gameSelection = games.get(gameNumber);
             try {
                 facade.joinGame(state.getAuthToken(), gameSelection.getGameID(), color);
-                gameplayUI.printBoard();
+                //gameplayUI.printBoard();
                 state.setInGame(true);
                 return "joined game";
             } catch (ResponseException e) {
@@ -98,7 +96,7 @@ public class PostLoginUI {
             if (allGames.isEmpty() || gameNum < 0 || gameNum >= allGames.size()) {
                 return "Game doesn't exist. Enter 'list' to see full list of games";
             }
-            gameplayUI.printBoard();
+            //gameplayUI.printBoard();
             state.setInGame(true);
             return "observing game";
         }
