@@ -49,12 +49,14 @@ public class Service {
     }
 
     public static class GameService {
-        GameDAO gameDAO;
-        AuthDAO authDAO;
+        static GameDAO gameDAO;
+        static AuthDAO authDAO;
+
         public GameService(GameDAO gameDAO, AuthDAO authDAO) {
             this.gameDAO = gameDAO;
             this.authDAO = authDAO;
         }
+
         public HashSet<GameData> listGames(String authToken) throws DataAccessException {
             authDAO.getAuth(authToken);
             return gameDAO.getGameList();
@@ -67,11 +69,11 @@ public class Service {
             do {
                 gameID = random.nextInt(1000) + 1;
             } while (gameDAO.gameExists(gameID));
-            ChessBoard chessBoard = new ChessBoard();
             ChessGame chessGame = new ChessGame();
+            ChessBoard chessBoard = new ChessBoard();
             chessBoard.resetBoard();
             chessGame.setBoard(chessBoard);
-            GameData gameData = new GameData(gameID, null, null, gameName, null);
+            GameData gameData = new GameData(gameID, null, null, gameName, chessGame);
             gameDAO.addGame(gameData);
             return gameID;
         }
@@ -84,14 +86,14 @@ public class Service {
             if (playerColor.equalsIgnoreCase("white") ||
                     playerColor.equalsIgnoreCase("black")) {
                 if (playerColor.equalsIgnoreCase("white")) {
-                    if (currentWhite == null){
+                    if (currentWhite == null) {
                         currentWhite = authData.getUsername();
                     } else {
                         return false;
                     }
                 }
                 if (playerColor.equalsIgnoreCase("black")) {
-                    if (currentBlack == null){
+                    if (currentBlack == null) {
                         currentBlack = authData.getUsername();
                     } else {
                         return false;
@@ -107,6 +109,21 @@ public class Service {
 
         public void clear() {
             gameDAO.clear();
+        }
+
+        public static GameData getGameData(String authToken, int gameID) throws DataAccessException {
+            try {
+                authDAO.getAuth(authToken);
+            } catch (DataAccessException e) {
+                throw new DataAccessException("Error getting auth to getGameData");
+            }
+
+            try {
+                return gameDAO.getGame(gameID);
+            } catch (DataAccessException e) {
+                throw new DataAccessException("Error getting getGameData");
+            }
+
         }
     }
 }
