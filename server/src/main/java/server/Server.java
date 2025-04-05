@@ -8,6 +8,8 @@ import service.Service;
 import java.util.Map;
 import java.util.HashSet;
 import java.util.HashMap;
+import server.websocket.WebSocketHandler;
+
 
 public class Server {
     UserDAO userDAO;
@@ -15,17 +17,21 @@ public class Server {
     GameDAO gameDAO;
     Service.UserService userService;
     Service.GameService gameService;
+    private final WebSocketHandler webSocketHandler;
     public Server() {
         userDAO = new SQLUserDAO();
         authDAO = new SQLAuthDAO();
         gameDAO = new SQLGameDAO();
         userService = new Service.UserService(userDAO, authDAO);
         gameService = new Service.GameService(gameDAO, authDAO);
+        webSocketHandler = new WebSocketHandler();
     }
     public int run(int desiredPort) {
         Spark.port(desiredPort);
 
         Spark.staticFiles.location("web");
+
+        Spark.webSocket("/ws", webSocketHandler);
 
         // Register your endpoints and handle exceptions here.
         Spark.delete("/db", this::clear);
