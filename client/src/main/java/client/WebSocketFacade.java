@@ -4,6 +4,7 @@ import chess.ChessGame;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import ui.GameplayUI;
 import websocket.messages.*;
 import websocket.commands.*;
 import exception.ResponseException;
@@ -43,6 +44,8 @@ public class WebSocketFacade extends Endpoint {
                         }
                         case "LOAD_GAME" -> {
                             LoadGameMessage loadGame = new Gson().fromJson(message, LoadGameMessage.class);
+                            ChessGame game = loadGame.getGame();
+                            GameplayUI.printBoard(game.getTeamTurn(), null);
                             notificationHandler.notify(loadGame);
                         }
                     }

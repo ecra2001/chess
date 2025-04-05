@@ -13,7 +13,7 @@ import java.util.HashSet;
 import static ui.EscapeSequences.*;
 public class GameplayUI {
 
-    ChessGame game;
+    static ChessGame game;
     int gameID;
     private final State state;
     ServerFacade facade;
@@ -40,7 +40,7 @@ public class GameplayUI {
         // }
     }
 
-    void printBoard(ChessGame.TeamColor color, ChessPosition selectedPos) {
+    public static void printBoard(ChessGame.TeamColor color, ChessPosition selectedPos) {
         var board = new StringBuilder();
 
         Collection<ChessMove> possibleMoves = selectedPos != null ? game.validMoves(selectedPos) : null;
@@ -67,7 +67,7 @@ public class GameplayUI {
         System.out.println(board);
     }
 
-    private String letterRow(String color) {
+    private static String letterRow(String color) {
         var board = new StringBuilder();
         board.append(SET_BG_COLOR_DARK_GREY);
         board.append(SET_TEXT_COLOR_WHITE);
@@ -82,7 +82,7 @@ public class GameplayUI {
         return board.toString();
     }
 
-    private String gameRow(int row, String color, HashSet<ChessPosition> highlightedSquares) {
+    private static String gameRow(int row, String color, HashSet<ChessPosition> highlightedSquares) {
         var board = new StringBuilder();
         board.append(SET_BG_COLOR_DARK_GREY);
         board.append(SET_TEXT_COLOR_WHITE);
@@ -106,7 +106,7 @@ public class GameplayUI {
         return board.toString();
     }
 
-    private String squareColor(int row, int col, HashSet<ChessPosition> highlightedSquares) {
+    private static String squareColor(int row, int col, HashSet<ChessPosition> highlightedSquares) {
         ChessPosition square = new ChessPosition(row, col);
         boolean darkSquare = (row + col) % 2 == 0;
         if (darkSquare) {
@@ -122,7 +122,7 @@ public class GameplayUI {
         }
     }
 
-    private String piece(int row, int column) {
+    private static String piece(int row, int column) {
         ChessPosition position = new ChessPosition(row, column);
         ChessPiece piece = game.getBoard().getPiece(position);
         if (piece == null) {
