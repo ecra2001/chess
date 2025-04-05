@@ -18,15 +18,14 @@ public class WebSocketHandler {
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException {
-        JsonObject json = JsonParser.parseString(message).getAsJsonObject();
-        String typeStr = json.get("commandType").getAsString();
-        UserGameCommand.CommandType type = UserGameCommand.CommandType.valueOf(typeStr);
+        UserGameCommand userGameCommand = new Gson().fromJson(message, UserGameCommand.class);
+        var type = userGameCommand.getCommandType();
+//        JsonObject json = JsonParser.parseString(message).getAsJsonObject();
+//        String typeStr = json.get("commandType").getAsString();
+//        UserGameCommand.CommandType type = UserGameCommand.CommandType.valueOf(typeStr);
 
         switch (type) {
-            case CONNECT -> {
-                ConnectCommand cmd = new Gson().fromJson(message, ConnectCommand.class);
-                handleConnect(cmd, session);
-            }
+            case CONNECT -> connect(userGameCommand.getAuthToken(), session);
             case MAKE_MOVE -> {
                 MakeMoveCommand cmd = new Gson().fromJson(message, MakeMoveCommand.class);
                 handleMakeMove(cmd);
@@ -42,11 +41,14 @@ public class WebSocketHandler {
         }
     }
 
+    private void connect(String authToken, Session session) throws IOException {
+        connections.add(authToken, session);
+        String message = "Player has joined game.";
+        var serverMessage = new ServerMessage(ServerMessage.ServerMessageType.NOTIFICATION);
+        connections.broadcast(authToken, serverMessage);
+    }
     private void handleConnect(ConnectCommand cmd, Session session) throws IOException {
-        connections.add(cmd.getAuthToken(), session);
 
-        NotificationMessage notif = new NotificationMessage("Player joined the game.");
-        connections.broadcast(cmd.getAuthToken(), new Gson().toJson(notif));
     }
 
     private void handleMakeMove(MakeMoveCommand cmd) throws IOException {
@@ -54,14 +56,10 @@ public class WebSocketHandler {
     }
 
     private void handleLeave(LeaveCommand cmd) throws IOException {
-        connections.remove(cmd.getAuthToken());
 
-        NotificationMessage notif = new NotificationMessage("Player left the game.");
-        connections.broadcast(cmd.getAuthToken(), new Gson().toJson(notif));
     }
 
     private void handleResign(ResignCommand cmd) throws IOException {
-        NotificationMessage notif = new NotificationMessage("Player has resigned. Game over.");
-        connections.broadcast(cmd.getAuthToken(), new Gson().toJson(notif));
+
     }
 }

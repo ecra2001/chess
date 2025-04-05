@@ -12,7 +12,8 @@ public class ConnectionManager {
     private final ConcurrentHashMap<String, Connection> connections = new ConcurrentHashMap<>();
 
     public void add(String authToken, Session session) {
-        connections.put(authToken, new Connection(authToken, session));
+        var connection = new Connection(authToken, session);
+        connections.put(authToken, connection);
     }
 
     public void remove(String authToken) {
@@ -26,18 +27,21 @@ public class ConnectionManager {
         }
     }
 
-    public void broadcast(String excludeAuthToken, String message) throws IOException {
-        List<String> toRemove = new ArrayList<>();
-        for (var entry : connections.entrySet()) {
-            if (!entry.getKey().equals(excludeAuthToken)) {
-                var conn = entry.getValue();
-                if (conn.session.isOpen()) {
-                    conn.send(message);
-                } else {
-                    toRemove.add(entry.getKey());
+    public void broadcast(String excludeAuthToken, ServerMessage serverMessage) throws IOException {
+        var removeList = new ArrayList<Connection>();
+        for (var c : connections.values()) {
+            if (c.session.isOpen()) {
+                if (!c.authToken.equals(excludeAuthToken)) {
+                    c.send(serverMessage.toString());
                 }
+            } else {
+                removeList.add(c);
             }
         }
-        toRemove.forEach(connections::remove);
+
+        // Clean up any connections that were left open.
+        for (var c : removeList) {
+            connections.remove(c.authToken);
+        }
     }
 }
