@@ -54,13 +54,13 @@ public class GameplayUI {
         if (color == ChessGame.TeamColor.BLACK) {
             board.append(letterRow("black"));
             for (int i = 1; i < 9; i++) {
-                board.append(gameRow(i, "black"));
+                board.append(gameRow(i, "black", possibleSquares));
             }
             board.append(letterRow("black"));
         } else {
             board.append(letterRow("white"));
             for (int i = 8; i > 0; i--) {
-                board.append(gameRow(i, "white"));
+                board.append(gameRow(i, "white", possibleSquares));
             }
             board.append(letterRow("white"));
         }
@@ -82,7 +82,7 @@ public class GameplayUI {
         return board.toString();
     }
 
-    private String gameRow(int row, String color) {
+    private String gameRow(int row, String color, HashSet<ChessPosition> highlightedSquares) {
         var board = new StringBuilder();
         board.append(SET_BG_COLOR_DARK_GREY);
         board.append(SET_TEXT_COLOR_WHITE);
@@ -90,10 +90,10 @@ public class GameplayUI {
         for (int i = 1; i < 9; i++) {
             if (Objects.equals(color, "black")) {
                 int col = i * -1 + 9;
-                board.append(squareColor(row, col));
+                board.append(squareColor(row, col, highlightedSquares));
                 board.append(piece(row, col));
             } else {
-                board.append(squareColor(row, i));
+                board.append(squareColor(row, i, highlightedSquares));
                 board.append(piece(row, i));
             }
         }
@@ -106,11 +106,18 @@ public class GameplayUI {
         return board.toString();
     }
 
-    private String squareColor(int row, int col) {
+    private String squareColor(int row, int col, HashSet<ChessPosition> highlightedSquares) {
+        ChessPosition square = new ChessPosition(row, col);
         boolean darkSquare = (row + col) % 2 == 0;
         if (darkSquare) {
+            if (highlightedSquares.contains(square)) {
+                return SET_BG_COLOR_DARK_GREEN;
+            }
             return SET_BG_COLOR_LIGHT_GREY;
         } else {
+            if (highlightedSquares.contains(square)) {
+                return SET_BG_COLOR_GREEN;
+            }
             return SET_BG_COLOR_WHITE;
         }
     }
