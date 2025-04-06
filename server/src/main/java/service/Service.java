@@ -10,11 +10,11 @@ import chess.ChessBoard;
 public class Service {
 
     public static class UserService {
-        UserDAO userDAO;
-        AuthDAO authDAO;
+        public static UserDAO userDAO;
+        public static AuthDAO authDAO;
         public UserService(UserDAO userDAO, AuthDAO authDAO){
-            this.userDAO = userDAO;
-            this.authDAO = authDAO;
+            UserService.userDAO = userDAO;
+            UserService.authDAO = authDAO;
         }
         public AuthData register(UserData userData) throws DataAccessException {
             userDAO.createUser(userData);
@@ -49,8 +49,8 @@ public class Service {
     }
 
     public static class GameService {
-        static GameDAO gameDAO;
-        static AuthDAO authDAO;
+        public static GameDAO gameDAO;
+        public static AuthDAO authDAO;
 
         public GameService(GameDAO gameDAO, AuthDAO authDAO) {
             this.gameDAO = gameDAO;

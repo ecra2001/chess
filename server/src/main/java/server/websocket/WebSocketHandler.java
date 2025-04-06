@@ -5,10 +5,12 @@ import service.Service;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import model.GameData;
+import model.*;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
+import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
+import java.lang.Throwable;
 import websocket.messages.*;
 import websocket.commands.*;
 
@@ -18,27 +20,51 @@ import java.io.IOException;
 public class WebSocketHandler {
     private final ConnectionManager connections = new ConnectionManager();
 
+    @OnWebSocketError
+    public void onError(Session session, Throwable error) {
+        System.err.println("WebSocket error: " + error.getMessage());
+        error.printStackTrace();
+    }
+
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException, DataAccessException {
-        UserGameCommand userGameCommand = new Gson().fromJson(message, UserGameCommand.class);
-        var type = userGameCommand.getCommandType();
-        switch (type) {
-            case CONNECT -> connect(userGameCommand.getAuthToken(), userGameCommand.getGameID(), session);
-            case MAKE_MOVE -> {
+        try {
+            UserGameCommand userGameCommand = new Gson().fromJson(message, UserGameCommand.class);
+            var type = userGameCommand.getCommandType();
+            switch (type) {
+                case CONNECT -> connect(userGameCommand.getAuthToken(), userGameCommand.getGameID(), session);
+                case MAKE_MOVE -> {
 
+                }
+                case LEAVE -> {
+
+                }
+                case RESIGN -> {
+
+                }
             }
-            case LEAVE -> {
-
-            }
-            case RESIGN -> {
-
+        } catch (Exception e) {
+            System.err.println("Error in onMessage: " + e.getMessage());
+            e.printStackTrace();
+            try {
+                sendError(session, new ErrorMessage("Error: Exception occurred in message handling"));
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
             }
         }
     }
 
     private void connect(String authToken, int gameID, Session session) throws IOException, DataAccessException {
+        AuthData authData = Service.UserService.authDAO.getAuth(authToken);
+        if (authData == null) {
+            sendError(session, new ErrorMessage("Error: Not authorized"));
+            return;
+        }
+        GameData game = Service.GameService.gameDAO.getGame(gameID);
+        if (game == null) {
+            sendError(session, new ErrorMessage("Error: Bad gameID"));
+        }
         connections.add(authToken, session);
-        GameData game = Service.GameService.getGameData(authToken, gameID);
         var loadGameMessage = new LoadGameMessage(game.getGame());
         session.getRemote().sendString(new Gson().toJson(loadGameMessage));
 
@@ -56,5 +82,11 @@ public class WebSocketHandler {
 
     private void resign() throws IOException {
 
+    }
+
+    private void sendError(Session session, ErrorMessage error) throws IOException {
+        String json = new Gson().toJson(error);
+        System.out.printf("Error: %s%n", json);
+        session.getRemote().sendString(json);
     }
 }
