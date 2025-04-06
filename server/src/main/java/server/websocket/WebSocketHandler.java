@@ -1,10 +1,9 @@
 package server.websocket;
 
+import chess.ChessGame;
 import dataaccess.DataAccessException;
 import service.Service;
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import model.*;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
@@ -68,7 +67,48 @@ public class WebSocketHandler {
         connections.broadcast(authToken, notificationMessage);
     }
 
-    private void makeMove() throws IOException {
+    private void makeMove(String authToken, int gameID, Session session) throws IOException, DataAccessException {
+        AuthData authData = Service.UserService.authDAO.getAuth(authToken);
+        GameData gameData = Service.GameService.gameDAO.getGame(gameID);
+        ChessGame.TeamColor color;
+        ChessGame.TeamColor opponentColor;
+        if (authData.getUsername().equals(gameData.getWhiteUsername())) {
+            color = ChessGame.TeamColor.WHITE;
+            opponentColor = ChessGame.TeamColor.BLACK;
+        } else if (authData.getUsername().equals(gameData.getBlackUsername())) {
+            color = ChessGame.TeamColor.BLACK;
+            opponentColor = ChessGame.TeamColor.WHITE;
+        } else {
+            sendError(session, new ErrorMessage("Error: Observer cannot make move"));
+            return;
+        }
+        if (gameData.getGame().getGameOver()) {
+            sendError(session, new ErrorMessage("Error: Game already over"));
+            return;
+        }
+        if (gameData.getGame().getTeamTurn() != color) {
+            sendError(session, new ErrorMessage("Error: Not your turn"));
+            return;
+        }
+        if (gameData.getGame().isInCheckmate(opponentColor)) {
+            gameData.getGame().setGameOver(true);
+            NotificationMessage notificationMessage = new NotificationMessage("Checkmate! %s wins.".formatted(color));
+            connections.broadcast(authToken, notificationMessage);
+        } else if (gameData.getGame().isInStalemate(opponentColor)) {
+            gameData.getGame().setGameOver(true);
+            NotificationMessage notificationMessage = new NotificationMessage("Stalemate! Tied game.");
+            connections.broadcast(authToken, notificationMessage);
+        } else if (gameData.getGame().isInCheck(opponentColor)) {
+            NotificationMessage notificationMessage = new NotificationMessage("%s in check.".formatted(opponentColor));
+            connections.broadcast(authToken, notificationMessage);
+        } else {
+            NotificationMessage notificationMessage = new NotificationMessage("%s moved.".formatted(color));
+            connections.broadcast(authToken, notificationMessage);
+        }
+        Service.GameService.gameDAO.updateGame(gameData);
+        var loadGameMessage = new LoadGameMessage(gameData.getGame());
+        session.getRemote().sendString(new Gson().toJson(loadGameMessage));
+
 
     }
 
