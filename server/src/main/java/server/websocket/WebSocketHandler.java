@@ -62,12 +62,12 @@ public class WebSocketHandler {
         if (game == null) {
             sendError(session, new ErrorMessage("Error: Bad gameID"));
         }
-        connections.add(authToken, session);
+        connections.add(authToken, session, gameID);
         var loadGameMessage = new LoadGameMessage(game.getGame());
         session.getRemote().sendString(new Gson().toJson(loadGameMessage));
 
-        NotificationMessage notificationMessage = new NotificationMessage("User has joined game");
-        connections.broadcast(authToken, notificationMessage);
+        NotificationMessage notificationMessage = new NotificationMessage("%s has joined game".formatted(authData.getUsername()));
+        connections.broadcast(gameID, authToken, notificationMessage);
     }
 
     private void makeMove(String authToken, int gameID, ChessMove move, Session session) throws IOException, DataAccessException {
@@ -96,21 +96,21 @@ public class WebSocketHandler {
             } else {
                 gameData.getGame().makeMove(move);
                 var loadGameMessage = new LoadGameMessage(gameData.getGame());
-                connections.broadcast(null, loadGameMessage);
+                connections.broadcast(gameID, null, loadGameMessage);
                 if (gameData.getGame().isInCheckmate(opponentColor)) {
                     gameData.getGame().setGameOver(true);
                     NotificationMessage notificationMessage = new NotificationMessage("Checkmate! %s wins.".formatted(color));
-                    connections.broadcast(authToken, notificationMessage);
+                    connections.broadcast(gameID, authToken, notificationMessage);
                 } else if (gameData.getGame().isInStalemate(opponentColor)) {
                     gameData.getGame().setGameOver(true);
                     NotificationMessage notificationMessage = new NotificationMessage("Stalemate! Tied game.");
-                    connections.broadcast(authToken, notificationMessage);
+                    connections.broadcast(gameID, authToken, notificationMessage);
                 } else if (gameData.getGame().isInCheck(opponentColor)) {
                     NotificationMessage notificationMessage = new NotificationMessage("%s in check.".formatted(opponentColor));
-                    connections.broadcast(authToken, notificationMessage);
+                    connections.broadcast(gameID, authToken, notificationMessage);
                 } else {
                     NotificationMessage notificationMessage = new NotificationMessage("%s moved.".formatted(color));
-                    connections.broadcast(authToken, notificationMessage);
+                    connections.broadcast(gameID, authToken, notificationMessage);
                 }
                 Service.GameService.gameDAO.updateGame(gameData);
             }
@@ -134,7 +134,7 @@ public class WebSocketHandler {
         }
         Service.GameService.gameDAO.updateGame(gameData);
         NotificationMessage notificationMessage = new NotificationMessage("User has left game");
-        connections.broadcast(authToken, notificationMessage);
+        connections.broadcast(gameID, authToken, notificationMessage);
     }
 
     private void resign(String authToken, int gameID, Session session) throws IOException, DataAccessException {
@@ -156,7 +156,7 @@ public class WebSocketHandler {
         gameData.getGame().setGameOver(true);
         Service.GameService.gameDAO.updateGame(gameData);
         NotificationMessage notificationMessage = new NotificationMessage("Player has forfeited");
-        connections.broadcast(null, notificationMessage);
+        connections.broadcast(gameID, null, notificationMessage);
     }
 
     private void sendError(Session session, ErrorMessage error) throws IOException {
