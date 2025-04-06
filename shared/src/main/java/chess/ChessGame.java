@@ -19,6 +19,13 @@ public class ChessGame {
         board.resetBoard();
     }
 
+    public void setGameOver(boolean gameOver) {
+        this.gameOver = gameOver;
+    }
+    public boolean getGameOver() {
+        return gameOver;
+    }
+
     /**
      * @return Which team's turn it is
      */

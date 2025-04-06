@@ -37,9 +37,7 @@ public class WebSocketHandler {
 
                 }
                 case LEAVE -> leave(userGameCommand.getAuthToken(), userGameCommand.getGameID(), session);
-                case RESIGN -> {
-
-                }
+                case RESIGN -> resign(userGameCommand.getAuthToken(), userGameCommand.getGameID(), session);
             }
         } catch (Exception e) {
             System.err.println("Error in onMessage: " + e.getMessage());
@@ -92,8 +90,26 @@ public class WebSocketHandler {
         connections.broadcast(authToken, notificationMessage);
     }
 
-    private void resign(String authToken) throws IOException {
-
+    private void resign(String authToken, int gameID, Session session) throws IOException, DataAccessException {
+        AuthData authData = Service.UserService.authDAO.getAuth(authToken);
+        GameData gameData = Service.GameService.gameDAO.getGame(gameID);
+        if (authData == null) {
+            sendError(session, new ErrorMessage("Error: Not authorized"));
+            return;
+        }
+        if (gameData.getGame().getGameOver()) {
+            sendError(session, new ErrorMessage("Error: Game already over"));
+            return;
+        }
+        if (!authData.getUsername().equals(gameData.getWhiteUsername()) &&
+                !authData.getUsername().equals(gameData.getBlackUsername())) {
+            sendError(session, new ErrorMessage("Error: Observer cannot resign"));
+            return;
+        }
+        gameData.getGame().setGameOver(true);
+        Service.GameService.gameDAO.updateGame(gameData);
+        NotificationMessage notificationMessage = new NotificationMessage("Player has forfeited");
+        connections.broadcast(null, notificationMessage);
     }
 
     private void sendError(Session session, ErrorMessage error) throws IOException {
