@@ -110,20 +110,5 @@ public class Service {
         public void clear() {
             gameDAO.clear();
         }
-
-        public static GameData getGameData(String authToken, int gameID) throws DataAccessException {
-            try {
-                authDAO.getAuth(authToken);
-            } catch (DataAccessException e) {
-                throw new DataAccessException("Error getting auth to getGameData");
-            }
-
-            try {
-                return gameDAO.getGame(gameID);
-            } catch (DataAccessException e) {
-                throw new DataAccessException("Error getting getGameData");
-            }
-
-        }
     }
 }

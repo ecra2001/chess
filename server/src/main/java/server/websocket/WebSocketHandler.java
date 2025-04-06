@@ -36,7 +36,7 @@ public class WebSocketHandler {
                 case MAKE_MOVE -> {
 
                 }
-                case LEAVE -> leave(userGameCommand.getAuthToken(), session);
+                case LEAVE -> leave(userGameCommand.getAuthToken(), userGameCommand.getGameID(), session);
                 case RESIGN -> {
 
                 }
@@ -66,7 +66,7 @@ public class WebSocketHandler {
         var loadGameMessage = new LoadGameMessage(game.getGame());
         session.getRemote().sendString(new Gson().toJson(loadGameMessage));
 
-        NotificationMessage notificationMessage = new NotificationMessage("Player has joined game");
+        NotificationMessage notificationMessage = new NotificationMessage("User has joined game");
         connections.broadcast(authToken, notificationMessage);
     }
 
@@ -74,14 +74,21 @@ public class WebSocketHandler {
 
     }
 
-    private void leave(String authToken, Session session) throws IOException, DataAccessException {
+    private void leave(String authToken, int gameID, Session session) throws IOException, DataAccessException {
         AuthData authData = Service.UserService.authDAO.getAuth(authToken);
         if (authData == null) {
             sendError(session, new ErrorMessage("Error: Not authorized"));
             return;
         }
+        GameData gameData = Service.GameService.gameDAO.getGame(gameID);
         connections.remove(authToken);
-        NotificationMessage notificationMessage = new NotificationMessage("Player has joined game");
+        if (authData.getUsername().equals(gameData.getWhiteUsername())) {
+            gameData = new GameData(gameData.getGameID(), null, gameData.getBlackUsername(), gameData.getGameName(), gameData.getGame());
+        } else if (authData.getUsername().equals(gameData.getBlackUsername())) {
+            gameData = new GameData(gameData.getGameID(), gameData.getBlackUsername(), null, gameData.getGameName(), gameData.getGame());
+        }
+        Service.GameService.gameDAO.updateGame(gameData);
+        NotificationMessage notificationMessage = new NotificationMessage("User has left game");
         connections.broadcast(authToken, notificationMessage);
     }
 
