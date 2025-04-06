@@ -35,7 +35,7 @@ public class WebSocketHandler {
             switch (type) {
                 case CONNECT -> connect(userGameCommand.getAuthToken(), userGameCommand.getGameID(), session);
                 case MAKE_MOVE -> {
-                    MakeMoveCommand makeMoveCommand = (MakeMoveCommand) userGameCommand;
+                    MakeMoveCommand makeMoveCommand = new Gson().fromJson(message, MakeMoveCommand.class);
                     makeMove(makeMoveCommand.getAuthToken(), makeMoveCommand.getGameID(), makeMoveCommand.getMove(), session);
                 }
                 case LEAVE -> leave(userGameCommand.getAuthToken(), userGameCommand.getGameID(), session);
@@ -95,6 +95,8 @@ public class WebSocketHandler {
                 return;
             } else {
                 gameData.getGame().makeMove(move);
+                var loadGameMessage = new LoadGameMessage(gameData.getGame());
+                connections.broadcast(null, loadGameMessage);
                 if (gameData.getGame().isInCheckmate(opponentColor)) {
                     gameData.getGame().setGameOver(true);
                     NotificationMessage notificationMessage = new NotificationMessage("Checkmate! %s wins.".formatted(color));
@@ -111,8 +113,6 @@ public class WebSocketHandler {
                     connections.broadcast(authToken, notificationMessage);
                 }
                 Service.GameService.gameDAO.updateGame(gameData);
-                var loadGameMessage = new LoadGameMessage(gameData.getGame());
-                session.getRemote().sendString(new Gson().toJson(loadGameMessage));
             }
         } catch (InvalidMoveException e) {
             sendError(session, new ErrorMessage("Error: Invalid move"));
