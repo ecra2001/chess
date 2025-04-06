@@ -36,9 +36,7 @@ public class WebSocketHandler {
                 case MAKE_MOVE -> {
 
                 }
-                case LEAVE -> {
-
-                }
+                case LEAVE -> leave(userGameCommand.getAuthToken(), session);
                 case RESIGN -> {
 
                 }
@@ -68,7 +66,7 @@ public class WebSocketHandler {
         var loadGameMessage = new LoadGameMessage(game.getGame());
         session.getRemote().sendString(new Gson().toJson(loadGameMessage));
 
-        NotificationMessage notificationMessage = new NotificationMessage("Game loaded successfully");
+        NotificationMessage notificationMessage = new NotificationMessage("Player has joined game");
         connections.broadcast(authToken, notificationMessage);
     }
 
@@ -76,11 +74,18 @@ public class WebSocketHandler {
 
     }
 
-    private void leave() throws IOException {
-
+    private void leave(String authToken, Session session) throws IOException, DataAccessException {
+        AuthData authData = Service.UserService.authDAO.getAuth(authToken);
+        if (authData == null) {
+            sendError(session, new ErrorMessage("Error: Not authorized"));
+            return;
+        }
+        connections.remove(authToken);
+        NotificationMessage notificationMessage = new NotificationMessage("Player has joined game");
+        connections.broadcast(authToken, notificationMessage);
     }
 
-    private void resign() throws IOException {
+    private void resign(String authToken) throws IOException {
 
     }
 
