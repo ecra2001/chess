@@ -40,6 +40,9 @@ public class SQLGameDAO extends SQLDAO implements GameDAO {
                         var gameName = rs.getString("gameName");
                         var json = rs.getString("game");
                         var chessGame = new Gson().fromJson(json, ChessGame.class);
+                        if (chessGame == null) {
+                            chessGame = new ChessGame();
+                        }
                         list.add(new GameData(gameID, whiteUsername, blackUsername,gameName, chessGame));
                     }
                 }
@@ -81,6 +84,9 @@ public class SQLGameDAO extends SQLDAO implements GameDAO {
                         var gameName = rs.getString("gameName");
                         var json = rs.getString("game");
                         var chessGame = new Gson().fromJson(json, ChessGame.class);
+                        if (chessGame == null){
+                            chessGame = new ChessGame();
+                        }
                         return new GameData(gameID, white, black, gameName, chessGame);
                     }
                 }

@@ -73,7 +73,7 @@ public class Service {
             ChessBoard chessBoard = new ChessBoard();
             chessBoard.resetBoard();
             chessGame.setBoard(chessBoard);
-            GameData gameData = new GameData(gameID, null, null, gameName, chessGame);
+            GameData gameData = new GameData(gameID, null, null, gameName, null);
             gameDAO.addGame(gameData);
             return gameID;
         }
