@@ -10,8 +10,6 @@ import model.*;
 import org.eclipse.jetty.websocket.api.Session;
 import org.eclipse.jetty.websocket.api.annotations.OnWebSocketMessage;
 import org.eclipse.jetty.websocket.api.annotations.WebSocket;
-import org.eclipse.jetty.websocket.api.annotations.OnWebSocketError;
-import java.lang.Throwable;
 import websocket.messages.*;
 import websocket.commands.*;
 
@@ -20,12 +18,6 @@ import java.io.IOException;
 @WebSocket
 public class WebSocketHandler {
     private final ConnectionManager connections = new ConnectionManager();
-
-    @OnWebSocketError
-    public void onError(Session session, Throwable error) {
-        System.err.println("WebSocket error: " + error.getMessage());
-        error.printStackTrace();
-    }
 
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException, DataAccessException {
