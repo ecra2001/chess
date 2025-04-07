@@ -15,18 +15,13 @@ import java.util.HashSet;
 
 import static ui.EscapeSequences.*;
 public class GameplayUI {
-
-    static ChessGame game;
-    int gameID;
     private final State state;
     ServerFacade facade;
     private final String serverUrl;
     private final NotificationHandler notificationHandler;
     private WebSocketFacade ws;
-    GameplayUI(ServerFacade facade, State state, GameData gameData, NotificationHandler notificationHandler) {
+    GameplayUI(ServerFacade facade, State state, NotificationHandler notificationHandler) {
         this.facade = facade;
-        this.game = gameData.getGame();
-        this.gameID = gameData.getGameID();
         serverUrl = facade.getServerUrl();
         this.state = state;
         this.notificationHandler = notificationHandler;
@@ -47,7 +42,7 @@ public class GameplayUI {
         }
     }
 
-    public static void printBoard(ChessGame.TeamColor color, ChessPosition selectedPos) {
+    public static void printBoard(ChessGame.TeamColor color, ChessGame game, ChessPosition selectedPos) {
         var board = new StringBuilder();
 
         Collection<ChessMove> possibleMoves = selectedPos != null ? game.validMoves(selectedPos) : null;
@@ -61,13 +56,13 @@ public class GameplayUI {
         if (color == ChessGame.TeamColor.BLACK) {
             board.append(letterRow("black"));
             for (int i = 1; i < 9; i++) {
-                board.append(gameRow(i, "black", possibleSquares));
+                board.append(gameRow(i, "black", possibleSquares, game));
             }
             board.append(letterRow("black"));
         } else {
             board.append(letterRow("white"));
             for (int i = 8; i > 0; i--) {
-                board.append(gameRow(i, "white", possibleSquares));
+                board.append(gameRow(i, "white", possibleSquares, game));
             }
             board.append(letterRow("white"));
         }
@@ -89,7 +84,7 @@ public class GameplayUI {
         return board.toString();
     }
 
-    private static String gameRow(int row, String color, HashSet<ChessPosition> highlightedSquares) {
+    private static String gameRow(int row, String color, HashSet<ChessPosition> highlightedSquares, ChessGame game) {
         var board = new StringBuilder();
         board.append(SET_BG_COLOR_DARK_GREY);
         board.append(SET_TEXT_COLOR_WHITE);
@@ -98,10 +93,10 @@ public class GameplayUI {
             if (Objects.equals(color, "black")) {
                 int col = i * -1 + 9;
                 board.append(squareColor(row, col, highlightedSquares));
-                board.append(piece(row, col));
+                board.append(piece(row, col, game));
             } else {
                 board.append(squareColor(row, i, highlightedSquares));
-                board.append(piece(row, i));
+                board.append(piece(row, i, game));
             }
         }
         board.append(SET_BG_COLOR_DARK_GREY);
@@ -129,7 +124,7 @@ public class GameplayUI {
         }
     }
 
-    private static String piece(int row, int column) {
+    private static String piece(int row, int column, ChessGame game) {
         ChessPosition position = new ChessPosition(row, column);
         ChessPiece piece = game.getBoard().getPiece(position);
         if (piece == null) {
@@ -158,7 +153,7 @@ public class GameplayUI {
 
     public String leave() throws ResponseException {
         ws = new WebSocketFacade(serverUrl, notificationHandler);
-        ws.leave(state.getAuthToken(), gameID);
+        ws.leave(state.getAuthToken(), state.getGameID());
         state.setInGame(false);
         return "left game";
     }

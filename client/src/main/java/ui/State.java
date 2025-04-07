@@ -15,7 +15,7 @@ public class State implements NotificationHandler{
     private boolean loggedIn = false;
     private boolean inGame = false;
     private AuthData authData;
-    GameData gameData;
+    private Integer gameID;
 
     public boolean isLoggedIn() {
         return loggedIn;
@@ -39,12 +39,18 @@ public class State implements NotificationHandler{
     public String getAuthToken() {
         return authData.getAuthToken();
     }
+    public Integer getGameID() {
+        return gameID;
+    }
+    public void setGameID(Integer gameID) {
+        this.gameID = gameID;
+    }
 
     public State(String serverUrl) {
         ServerFacade server = new ServerFacade(serverUrl);
         preLogin = new PreLoginUI(server, this);
         postLogin = new PostLoginUI(server, this, this);
-        gameplay = new GameplayUI(server, this, gameData, this);
+        gameplay = new GameplayUI(server, this, this);
     }
 
     public void run() {

@@ -88,6 +88,7 @@ public class PostLoginUI {
                 facade.joinGame(state.getAuthToken(), gameSelection.getGameID(), color);
                 ws = new WebSocketFacade(serverUrl, notificationHandler);
                 ws.connect(state.getAuthToken(), gameSelection.getGameID());
+                state.setGameID(gameSelection.getGameID());
                 state.setInGame(true);
                 return "joined game";
             } catch (ResponseException e) {
@@ -107,6 +108,7 @@ public class PostLoginUI {
             GameData gameSelection = allGames.get(gameNum);
             ws = new WebSocketFacade(serverUrl, notificationHandler);
             ws.connect(state.getAuthToken(), gameSelection.getGameID());
+            state.setGameID(gameSelection.getGameID());
             state.setInGame(true);
             return "observing game";
         }
