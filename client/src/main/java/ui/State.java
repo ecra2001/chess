@@ -81,9 +81,7 @@ public class State implements NotificationHandler{
     private void printPrompt() {
         if (isLoggedIn() && !isInGame()) {
             System.out.print("\n" + SET_TEXT_COLOR_YELLOW + "[LOGGED_IN] >>> " + SET_TEXT_COLOR_GREEN);
-        } else if (isLoggedIn() && isInGame()) {
-            System.out.print("\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN);
-        } else {
+        } else if (!isLoggedIn()) {
             System.out.print("\n" + SET_TEXT_COLOR_WHITE + "[LOGGED_OUT] >>> " + SET_TEXT_COLOR_GREEN);
         }
     }

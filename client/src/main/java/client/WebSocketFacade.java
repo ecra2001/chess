@@ -14,6 +14,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.LinkedList;
 
+import static ui.EscapeSequences.SET_TEXT_COLOR_GREEN;
+import static ui.EscapeSequences.SET_TEXT_COLOR_MAGENTA;
+
 public class WebSocketFacade extends Endpoint {
     Session session;
     NotificationHandler notificationHandler;
@@ -47,6 +50,7 @@ public class WebSocketFacade extends Endpoint {
                             ChessGame game = loadGame.getGame();
                             GameplayUI.printBoard(game.getTeamTurn(), game, null);
                             notificationHandler.notify(loadGame);
+                            System.out.print("\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN);
                         }
                     }
                 }

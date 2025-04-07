@@ -66,7 +66,7 @@ public class GameplayUI {
             }
             board.append(letterRow("white"));
         }
-        System.out.println(board);
+        System.out.print(board);
     }
 
     private static String letterRow(String color) {
@@ -93,14 +93,16 @@ public class GameplayUI {
             if (Objects.equals(color, "black")) {
                 int col = i * -1 + 9;
                 board.append(squareColor(row, col, highlightedSquares));
+                board.append(SET_TEXT_COLOR_BLACK);
                 board.append(piece(row, col, game));
             } else {
                 board.append(squareColor(row, i, highlightedSquares));
+                board.append(SET_TEXT_COLOR_BLACK);
                 board.append(piece(row, i, game));
             }
         }
         board.append(SET_BG_COLOR_DARK_GREY);
-        board.append(SET_TEXT_COLOR_BLACK);
+        board.append(SET_TEXT_COLOR_WHITE);
         board.append(String.format(" %d ", row));
         board.append(RESET_BG_COLOR);
         board.append(RESET_TEXT_COLOR);

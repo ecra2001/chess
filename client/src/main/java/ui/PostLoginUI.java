@@ -90,7 +90,7 @@ public class PostLoginUI {
                 ws.connect(state.getAuthToken(), gameSelection.getGameID());
                 state.setGameID(gameSelection.getGameID());
                 state.setInGame(true);
-                return "joined game";
+                return "joined game\n";
             } catch (ResponseException e) {
                 throw new DataFormatException("Failed to join: Either color taken or game no longer exists.");
             }
