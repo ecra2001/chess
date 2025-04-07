@@ -2,6 +2,9 @@ package ui;
 import chess.*;
 import java.util.Arrays;
 import java.util.zip.DataFormatException;
+
+import client.NotificationHandler;
+import client.WebSocketFacade;
 import com.google.gson.Gson;
 import model.*;
 import exception.ResponseException;
@@ -17,16 +20,20 @@ public class GameplayUI {
     int gameID;
     private final State state;
     ServerFacade facade;
-    GameplayUI(ServerFacade facade, State state, GameData gameData) {
+    private final String serverUrl;
+    private final NotificationHandler notificationHandler;
+    private WebSocketFacade ws;
+    GameplayUI(ServerFacade facade, State state, GameData gameData, NotificationHandler notificationHandler) {
         this.facade = facade;
         this.game = gameData.getGame();
         this.gameID = gameData.getGameID();
-
+        serverUrl = facade.getServerUrl();
         this.state = state;
+        this.notificationHandler = notificationHandler;
     }
 
     public String eval(String input) {
-        // try {
+        try {
             var tokens = input.toLowerCase().split(" ");
             var cmd = (tokens.length > 0) ? tokens[0] : "help";
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
@@ -35,9 +42,9 @@ public class GameplayUI {
                 case "quit" -> "quit";
                 default -> help();
             };
-        // } catch (ResponseException | DataFormatException ex) {
-        //     return ex.getMessage();
-        // }
+        } catch (ResponseException ex) {
+            return ex.getMessage();
+        }
     }
 
     public static void printBoard(ChessGame.TeamColor color, ChessPosition selectedPos) {
@@ -149,7 +156,9 @@ public class GameplayUI {
         };
     }
 
-    public String leave() {
+    public String leave() throws ResponseException {
+        ws = new WebSocketFacade(serverUrl, notificationHandler);
+        ws.leave(state.getAuthToken(), gameID);
         state.setInGame(false);
         return "left game";
     }

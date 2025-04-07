@@ -15,7 +15,6 @@ public class State implements NotificationHandler{
     private boolean loggedIn = false;
     private boolean inGame = false;
     private AuthData authData;
-    // ChessBoard board;
     GameData gameData;
 
     public boolean isLoggedIn() {
@@ -43,11 +42,9 @@ public class State implements NotificationHandler{
 
     public State(String serverUrl) {
         ServerFacade server = new ServerFacade(serverUrl);
-        //this.board = new ChessBoard();
-        //board.resetBoard();
         preLogin = new PreLoginUI(server, this);
         postLogin = new PostLoginUI(server, this, this);
-        gameplay = new GameplayUI(server, this, gameData);
+        gameplay = new GameplayUI(server, this, gameData, this);
     }
 
     public void run() {
