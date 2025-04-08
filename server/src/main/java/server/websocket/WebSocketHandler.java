@@ -122,7 +122,7 @@ public class WebSocketHandler {
         if (authData.getUsername().equals(gameData.getWhiteUsername())) {
             gameData = new GameData(gameData.getGameID(), null, gameData.getBlackUsername(), gameData.getGameName(), gameData.getGame());
         } else if (authData.getUsername().equals(gameData.getBlackUsername())) {
-            gameData = new GameData(gameData.getGameID(), gameData.getBlackUsername(), null, gameData.getGameName(), gameData.getGame());
+            gameData = new GameData(gameData.getGameID(), gameData.getWhiteUsername(), null, gameData.getGameName(), gameData.getGame());
         }
         Service.GameService.gameDAO.updateGame(gameData);
         NotificationMessage notificationMessage = new NotificationMessage("User has left game");

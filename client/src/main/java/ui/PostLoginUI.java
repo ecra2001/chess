@@ -65,8 +65,10 @@ public class PostLoginUI {
         int gameNumber = 0;
         for (var game : games) {
             gameNumber += 1;
+            String white = game.getWhiteUsername() == null ? "empty" : game.getWhiteUsername();
+            String black = game.getBlackUsername() == null ? "empty" : game.getBlackUsername();
             result.append(String.format("[%d] - Name: %s, White: %s, Black: %s%n",
-                    gameNumber, game.getGameName(), game.getWhiteUsername(), game.getBlackUsername()));
+                    gameNumber, game.getGameName(), white, black));
         }
 
         return result.toString();
