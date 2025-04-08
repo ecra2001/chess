@@ -20,6 +20,7 @@ import static ui.EscapeSequences.SET_TEXT_COLOR_MAGENTA;
 public class WebSocketFacade extends Endpoint {
     Session session;
     NotificationHandler notificationHandler;
+    private ChessGame.TeamColor playerColor;
 
     public WebSocketFacade(String url, NotificationHandler notificationHandler) throws ResponseException {
         try {
@@ -48,7 +49,7 @@ public class WebSocketFacade extends Endpoint {
                         case "LOAD_GAME" -> {
                             LoadGameMessage loadGame = new Gson().fromJson(message, LoadGameMessage.class);
                             ChessGame game = loadGame.getGame();
-                            GameplayUI.printBoard(game.getTeamTurn(), game, null);
+                            GameplayUI.printBoard(playerColor, game, null);
                             notificationHandler.notify(loadGame);
                             System.out.print("\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN);
                         }
@@ -65,6 +66,7 @@ public class WebSocketFacade extends Endpoint {
 
     public void connect(String authToken, int gameID) throws ResponseException {
         try {
+            this.playerColor = ChessGame.TeamColor.WHITE;
             var command = new UserGameCommand(UserGameCommand.CommandType.CONNECT, authToken, gameID);
             this.session.getBasicRemote().sendText(new Gson().toJson(command));
         } catch (IOException ex) {

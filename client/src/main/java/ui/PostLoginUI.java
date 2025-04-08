@@ -71,7 +71,7 @@ public class PostLoginUI {
 
         return result.toString();
     }
-
+    // TODO Bug when joining as black
     public String join(String... params) throws ResponseException, DataFormatException {
         if (params.length == 2) {
             var gameNumber = Integer.parseInt(params[0]) - 1;
@@ -110,7 +110,7 @@ public class PostLoginUI {
             ws.connect(state.getAuthToken(), gameSelection.getGameID());
             state.setGameID(gameSelection.getGameID());
             state.setInGame(true);
-            return "observing game";
+            return "observing game\n";
         }
         throw new ResponseException(400, "Expected: observe <ID>");
     }

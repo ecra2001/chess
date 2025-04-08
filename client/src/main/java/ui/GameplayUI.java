@@ -59,7 +59,7 @@ public class GameplayUI {
                 board.append(gameRow(i, "black", possibleSquares, game));
             }
             board.append(letterRow("black"));
-        } else {
+        } else if (color == ChessGame.TeamColor.WHITE){
             board.append(letterRow("white"));
             for (int i = 8; i > 0; i--) {
                 board.append(gameRow(i, "white", possibleSquares, game));
