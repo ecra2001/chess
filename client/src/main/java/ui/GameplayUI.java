@@ -154,10 +154,12 @@ public class GameplayUI {
         };
     }
 
-    public void redraw() {
+    public String redraw() {
+        ws = state.getWebSocket();
         ChessGame game = state.getGame();
         printBoard(ws.getPlayerColor(), game, null);
         System.out.print("\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN);
+        return null;
     }
 
     public String leave() throws ResponseException {

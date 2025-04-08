@@ -89,6 +89,7 @@ public class PostLoginUI {
             try {
                 facade.joinGame(state.getAuthToken(), gameSelection.getGameID(), color);
                 ws = new WebSocketFacade(serverUrl, notificationHandler);
+                state.setGame(gameSelection.getGame());
                 state.setWebSocket(ws);
                 ws.connect(state.getAuthToken(), gameSelection.getGameID(), color);
                 state.setGameID(gameSelection.getGameID());
