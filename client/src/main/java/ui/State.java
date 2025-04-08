@@ -7,6 +7,7 @@ import chess.*;
 import client.ServerFacade;
 import client.NotificationHandler;
 import websocket.messages.ServerMessage;
+import client.WebSocketFacade;
 
 public class State implements NotificationHandler{
     private final PreLoginUI preLogin;
@@ -16,6 +17,7 @@ public class State implements NotificationHandler{
     private boolean inGame = false;
     private AuthData authData;
     private Integer gameID;
+    private WebSocketFacade webSocket;
 
     public boolean isLoggedIn() {
         return loggedIn;
@@ -44,6 +46,13 @@ public class State implements NotificationHandler{
     }
     public void setGameID(Integer gameID) {
         this.gameID = gameID;
+    }
+
+    public WebSocketFacade getWebSocket() {
+        return webSocket;
+    }
+    public void setWebSocket(WebSocketFacade webSocket) {
+        this.webSocket = webSocket;
     }
 
     public State(String serverUrl) {

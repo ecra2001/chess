@@ -154,7 +154,7 @@ public class GameplayUI {
     }
 
     public String leave() throws ResponseException {
-        ws = new WebSocketFacade(serverUrl, notificationHandler);
+        ws = state.getWebSocket();
         ws.leave(state.getAuthToken(), state.getGameID());
         state.setInGame(false);
         return "left game";
