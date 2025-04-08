@@ -161,8 +161,52 @@ public class GameplayUI {
         };
     }
 
-    public String makeMove(String... params) {
-        return null;
+    public String makeMove(String... params) throws ResponseException {
+        if (params.length >= 2 && params.length <= 4) {
+            String from = params[0].toLowerCase();
+            String to = params[1].toLowerCase();
+
+            ChessPosition oldPos = null;
+            ChessPosition newPos = null;
+
+            if (from.length() == 2 && from.charAt(0) >= 'a' && from.charAt(0) <= 'h' &&
+                    from.charAt(1) >= '1' && from.charAt(1) <= '8') {
+                int row = from.charAt(1) - '0';
+                int col = from.charAt(0) - 'a' + 1;
+                oldPos = new ChessPosition(row, col);
+            } else {
+                return "Please provide valid start position coordinates (i.e. 'b3')";
+            }
+
+            if (to.length() == 2 && to.charAt(0) >= 'a' && to.charAt(0) <= 'h' &&
+                    to.charAt(1) >= '1' && to.charAt(1) <= '8') {
+                int row = to.charAt(1) - '0';
+                int col = to.charAt(0) - 'a' + 1;
+                newPos = new ChessPosition(row, col);
+            } else {
+                return "Please provide valid end position coordinates (i.e. 'b3')";
+            }
+
+            ChessPiece.PieceType promotion = null;
+            if (params.length == 3) {
+                switch (params[2].toUpperCase()) {
+                    case "QUEEN" -> promotion = ChessPiece.PieceType.QUEEN;
+                    case "KNIGHT" -> promotion = ChessPiece.PieceType.KNIGHT;
+                    case "BISHOP" -> promotion = ChessPiece.PieceType.BISHOP;
+                    case "ROOK" -> promotion = ChessPiece.PieceType.ROOK;
+                    case "PAWN" -> promotion = ChessPiece.PieceType.PAWN;
+                    default -> {
+                        return "Please provide valid promotion piece (i.e. 'queen')";
+                    }
+                }
+            }
+
+            ChessMove chessMove = new ChessMove(oldPos, newPos, promotion);
+            ws = state.getWebSocket();
+            ws.makeMove(state.getAuthToken(), state.getGameID(), chessMove);
+            return "made move";
+        }
+        throw new ResponseException(400, "Expected: move <[a-h][1-8]> <[a-h][1-8]> [<promotion>]");
     }
 
     public String highlight(String... params) throws ResponseException {
@@ -207,10 +251,10 @@ public class GameplayUI {
     public String help() {
         return """
                 redraw
-                leave
-                move
-                resign
+                move <[a-h][1-8]> <[a-h][1-8]>
                 highlight <[a-h][1-8]>
+                resign
+                leave
                 quit
                 help
                 """;
