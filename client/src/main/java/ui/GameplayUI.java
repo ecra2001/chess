@@ -41,7 +41,7 @@ public class GameplayUI {
                 case "quit" -> "quit";
                 default -> help();
             };
-        } catch (ResponseException | DataFormatException ex) {
+        } catch (ResponseException ex) {
             return ex.getMessage();
         }
     }
@@ -60,13 +60,13 @@ public class GameplayUI {
         if (color.equalsIgnoreCase("BLACK")) {
             board.append(letterRow("black"));
             for (int i = 1; i < 9; i++) {
-                board.append(gameRow(i, "black", possibleSquares, game));
+                board.append(gameRow(i, "black", possibleSquares, game, selectedPos));
             }
             board.append(letterRow("black"));
         } else if (color.equalsIgnoreCase("WHITE")) {
             board.append(letterRow("white"));
             for (int i = 8; i > 0; i--) {
-                board.append(gameRow(i, "white", possibleSquares, game));
+                board.append(gameRow(i, "white", possibleSquares, game, selectedPos));
             }
             board.append(letterRow("white"));
         }
@@ -88,7 +88,7 @@ public class GameplayUI {
         return board.toString();
     }
 
-    private static String gameRow(int row, String color, HashSet<ChessPosition> highlightedSquares, ChessGame game) {
+    private static String gameRow(int row, String color, HashSet<ChessPosition> highlightedSquares, ChessGame game, ChessPosition selectedPos) {
         var board = new StringBuilder();
         board.append(SET_BG_COLOR_DARK_GREY);
         board.append(SET_TEXT_COLOR_WHITE);
@@ -96,11 +96,11 @@ public class GameplayUI {
         for (int i = 1; i < 9; i++) {
             if (Objects.equals(color, "black")) {
                 int col = i * -1 + 9;
-                board.append(squareColor(row, col, highlightedSquares));
+                board.append(squareColor(row, col, highlightedSquares, selectedPos));
                 board.append(SET_TEXT_COLOR_BLACK);
                 board.append(piece(row, col, game));
             } else {
-                board.append(squareColor(row, i, highlightedSquares));
+                board.append(squareColor(row, i, highlightedSquares, selectedPos));
                 board.append(SET_TEXT_COLOR_BLACK);
                 board.append(piece(row, i, game));
             }
@@ -114,9 +114,13 @@ public class GameplayUI {
         return board.toString();
     }
 
-    private static String squareColor(int row, int col, HashSet<ChessPosition> highlightedSquares) {
+    private static String squareColor(int row, int col, HashSet<ChessPosition> highlightedSquares, ChessPosition selectedPos) {
         ChessPosition square = new ChessPosition(row, col);
         boolean darkSquare = (row + col) % 2 == 0;
+
+        if (square.equals(selectedPos)) {
+            return SET_BG_COLOR_BLUE;
+        }
         if (darkSquare) {
             if (highlightedSquares.contains(square)) {
                 return SET_BG_COLOR_DARK_GREEN;
@@ -161,9 +165,9 @@ public class GameplayUI {
         return null;
     }
 
-    public String highlight(String... params) throws DataFormatException {
-        if (params.length == 2) {
-            String coordinates = params[1].toLowerCase();
+    public String highlight(String... params) throws ResponseException {
+        if (params.length == 1) {
+            String coordinates = params[0].toLowerCase();
             if (coordinates.length() == 2 && coordinates.charAt(0) >= 'a' && coordinates.charAt(0) <= 'h' &&
                     coordinates.charAt(1) >= '1' && coordinates.charAt(1) <= '8') {
 
@@ -179,7 +183,7 @@ public class GameplayUI {
                 return "Please provide valid coordinates (i.e. 'b3')";
             }
         }
-        throw new DataFormatException("Highlight error");
+        throw new ResponseException(400, "Expected: highlight <[a-h][1-8]>");
     }
 
     public String resign() {
