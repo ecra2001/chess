@@ -34,6 +34,7 @@ public class GameplayUI {
             var params = Arrays.copyOfRange(tokens, 1, tokens.length);
             return switch (cmd) {
                 case "leave" -> leave();
+                case "redraw" -> redraw();
                 case "quit" -> "quit";
                 default -> help();
             };
@@ -151,6 +152,12 @@ public class GameplayUI {
                 case PAWN -> BLACK_PAWN;
             };
         };
+    }
+
+    public void redraw() {
+        ChessGame game = state.getGame();
+        printBoard(ws.getPlayerColor(), game, null);
+        System.out.print("\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN);
     }
 
     public String leave() throws ResponseException {

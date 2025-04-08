@@ -18,6 +18,7 @@ public class State implements NotificationHandler{
     private AuthData authData;
     private Integer gameID;
     private WebSocketFacade webSocket;
+    private ChessGame game;
 
     public boolean isLoggedIn() {
         return loggedIn;
@@ -53,6 +54,14 @@ public class State implements NotificationHandler{
     }
     public void setWebSocket(WebSocketFacade webSocket) {
         this.webSocket = webSocket;
+    }
+
+    public ChessGame getGame() {
+        return game;
+    }
+
+    public void setGame(ChessGame game) {
+        this.game = game;
     }
 
     public State(String serverUrl) {

@@ -12,7 +12,6 @@ import javax.websocket.*;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.LinkedList;
 
 import static ui.EscapeSequences.SET_TEXT_COLOR_GREEN;
 import static ui.EscapeSequences.SET_TEXT_COLOR_MAGENTA;
@@ -21,6 +20,9 @@ public class WebSocketFacade extends Endpoint {
     Session session;
     NotificationHandler notificationHandler;
     private String playerColor;
+    public String getPlayerColor() {
+        return playerColor;
+    }
 
     public WebSocketFacade(String url, NotificationHandler notificationHandler) throws ResponseException {
         try {
