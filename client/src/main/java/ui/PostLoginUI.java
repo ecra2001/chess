@@ -115,8 +115,9 @@ public class PostLoginUI {
             state.setGameID(gameSelection.getGameID());
             state.setInGame(true);
             return "observing game\n";
+        } else {
+            throw new ResponseException(400, "Expected: observe <ID>");
         }
-        throw new ResponseException(400, "Expected: observe <ID>");
     }
 
     public String logout() throws ResponseException {
