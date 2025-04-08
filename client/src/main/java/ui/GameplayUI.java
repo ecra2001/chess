@@ -35,10 +35,13 @@ public class GameplayUI {
             return switch (cmd) {
                 case "leave" -> leave();
                 case "redraw" -> redraw();
+                case "move" -> makeMove(params);
+                case "highlight" -> highlight(params);
+                case "resign" -> resign();
                 case "quit" -> "quit";
                 default -> help();
             };
-        } catch (ResponseException ex) {
+        } catch (ResponseException | DataFormatException ex) {
             return ex.getMessage();
         }
     }
@@ -154,12 +157,40 @@ public class GameplayUI {
         };
     }
 
+    public String makeMove(String... params) {
+        return null;
+    }
+
+    public String highlight(String... params) throws DataFormatException {
+        if (params.length == 2) {
+            String coordinates = params[1].toLowerCase();
+            if (coordinates.length() == 2 && coordinates.charAt(0) >= 'a' && coordinates.charAt(0) <= 'h' &&
+                    coordinates.charAt(1) >= '1' && coordinates.charAt(1) <= '8') {
+
+                int row = coordinates.charAt(1) - '0';
+                int col = coordinates.charAt(0) - 'a' + 1;
+
+                ChessPosition position = new ChessPosition(row, col);
+                ws = state.getWebSocket();
+                ChessGame game = state.getGame();
+                printBoard(ws.getPlayerColor(), game, position);
+                return "\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN;
+            } else {
+                return "Please provide valid coordinates (i.e. 'b3')";
+            }
+        }
+        throw new DataFormatException("Highlight error");
+    }
+
+    public String resign() {
+        return null;
+    }
+
     public String redraw() {
         ws = state.getWebSocket();
         ChessGame game = state.getGame();
         printBoard(ws.getPlayerColor(), game, null);
-        System.out.print("\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN);
-        return null;
+        return "\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN;
     }
 
     public String leave() throws ResponseException {
@@ -175,7 +206,7 @@ public class GameplayUI {
                 leave
                 move
                 resign
-                highlight
+                highlight <[a-h][1-8]>
                 quit
                 help
                 """;
