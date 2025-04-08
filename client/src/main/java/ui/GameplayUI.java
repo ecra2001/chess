@@ -204,9 +204,8 @@ public class GameplayUI {
             ChessMove chessMove = new ChessMove(oldPos, newPos, promotion);
             ws = state.getWebSocket();
             ws.makeMove(state.getAuthToken(), state.getGameID(), chessMove);
-            return "made move";
         }
-        throw new ResponseException(400, "Expected: move <[a-h][1-8]> <[a-h][1-8]> [<promotion>]");
+        throw new ResponseException(400, "Expected: move <[a-h][1-8]> <[a-h][1-8]> <promotion>\n");
     }
 
     public String highlight(String... params) throws ResponseException {

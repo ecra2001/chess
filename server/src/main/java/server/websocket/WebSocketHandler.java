@@ -22,16 +22,26 @@ public class WebSocketHandler {
     @OnWebSocketMessage
     public void onMessage(Session session, String message) throws IOException, DataAccessException {
         try {
-            UserGameCommand userGameCommand = new Gson().fromJson(message, UserGameCommand.class);
-            var type = userGameCommand.getCommandType();
-            switch (type) {
-                case CONNECT -> connect(userGameCommand.getAuthToken(), userGameCommand.getGameID(), session);
+            Gson gson = new Gson();
+            UserGameCommand baseCommand = gson.fromJson(message, UserGameCommand.class);
+
+            switch (baseCommand.getCommandType()) {
+                case CONNECT -> {
+                    ConnectCommand connectCommand = gson.fromJson(message, ConnectCommand.class);
+                    connect(connectCommand.getAuthToken(), connectCommand.getGameID(), session);
+                }
                 case MAKE_MOVE -> {
-                    MakeMoveCommand makeMoveCommand = new Gson().fromJson(message, MakeMoveCommand.class);
+                    MakeMoveCommand makeMoveCommand = gson.fromJson(message, MakeMoveCommand.class);
                     makeMove(makeMoveCommand.getAuthToken(), makeMoveCommand.getGameID(), makeMoveCommand.getMove(), session);
                 }
-                case LEAVE -> leave(userGameCommand.getAuthToken(), userGameCommand.getGameID(), session);
-                case RESIGN -> resign(userGameCommand.getAuthToken(), userGameCommand.getGameID(), session);
+                case LEAVE -> {
+                    LeaveCommand leaveCommand = gson.fromJson(message, LeaveCommand.class);
+                    leave(leaveCommand.getAuthToken(), leaveCommand.getGameID(), session);
+                }
+                case RESIGN -> {
+                    ResignCommand resignCommand = gson.fromJson(message, ResignCommand.class);
+                    resign(resignCommand.getAuthToken(), resignCommand.getGameID(), session);
+                }
             }
         } catch (Exception e) {
             System.err.println("Error in onMessage: " + e.getMessage());
