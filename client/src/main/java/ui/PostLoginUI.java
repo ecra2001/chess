@@ -71,7 +71,7 @@ public class PostLoginUI {
 
         return result.toString();
     }
-    // TODO Bug when joining as black
+
     public String join(String... params) throws ResponseException, DataFormatException {
         if (params.length == 2) {
             var gameNumber = Integer.parseInt(params[0]) - 1;
@@ -87,7 +87,7 @@ public class PostLoginUI {
             try {
                 facade.joinGame(state.getAuthToken(), gameSelection.getGameID(), color);
                 ws = new WebSocketFacade(serverUrl, notificationHandler);
-                ws.connect(state.getAuthToken(), gameSelection.getGameID());
+                ws.connect(state.getAuthToken(), gameSelection.getGameID(), color);
                 state.setGameID(gameSelection.getGameID());
                 state.setInGame(true);
                 return "joined game\n";
@@ -107,7 +107,7 @@ public class PostLoginUI {
             }
             GameData gameSelection = allGames.get(gameNum);
             ws = new WebSocketFacade(serverUrl, notificationHandler);
-            ws.connect(state.getAuthToken(), gameSelection.getGameID());
+            ws.connect(state.getAuthToken(), gameSelection.getGameID(), null);
             state.setGameID(gameSelection.getGameID());
             state.setInGame(true);
             return "observing game\n";

@@ -42,7 +42,7 @@ public class GameplayUI {
         }
     }
 
-    public static void printBoard(ChessGame.TeamColor color, ChessGame game, ChessPosition selectedPos) {
+    public static void printBoard(String color, ChessGame game, ChessPosition selectedPos) {
         var board = new StringBuilder();
 
         Collection<ChessMove> possibleMoves = selectedPos != null ? game.validMoves(selectedPos) : null;
@@ -53,13 +53,13 @@ public class GameplayUI {
             }
         }
 
-        if (color == ChessGame.TeamColor.BLACK) {
+        if (color.equalsIgnoreCase("BLACK")) {
             board.append(letterRow("black"));
             for (int i = 1; i < 9; i++) {
                 board.append(gameRow(i, "black", possibleSquares, game));
             }
             board.append(letterRow("black"));
-        } else if (color == ChessGame.TeamColor.WHITE){
+        } else if (color.equalsIgnoreCase("WHITE")) {
             board.append(letterRow("white"));
             for (int i = 8; i > 0; i--) {
                 board.append(gameRow(i, "white", possibleSquares, game));
