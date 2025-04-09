@@ -110,20 +110,19 @@ public class WebSocketHandler {
                 gameData.getGame().makeMove(move);
                 var loadGameMessage = new LoadGameMessage(gameData.getGame());
                 connections.broadcast(gameID, null, loadGameMessage);
+                NotificationMessage notificationMessage = new NotificationMessage("%s moved.".formatted(authData.getUsername()));
+                connections.broadcast(gameID, authToken, notificationMessage);
                 if (gameData.getGame().isInCheckmate(opponentColor)) {
                     gameData.getGame().setGameOver(true);
-                    NotificationMessage notificationMessage = new NotificationMessage("Checkmate! %s wins.".formatted(authData.getUsername()));
+                    notificationMessage = new NotificationMessage("Checkmate! %s wins.".formatted(authData.getUsername()));
                     connections.broadcast(gameID, null, notificationMessage);
                 } else if (gameData.getGame().isInStalemate(opponentColor)) {
                     gameData.getGame().setGameOver(true);
-                    NotificationMessage notificationMessage = new NotificationMessage("Stalemate! Tied game.");
-                    connections.broadcast(gameID, authToken, notificationMessage);
-                } else if (gameData.getGame().isInCheck(opponentColor)) {
-                    NotificationMessage notificationMessage =
-                            new NotificationMessage("%s moved. %s in check.".formatted(authData.getUsername(), opponentColor.toString()));
+                    notificationMessage = new NotificationMessage("Stalemate! Tied game.");
                     connections.broadcast(gameID, null, notificationMessage);
-                } else {
-                    NotificationMessage notificationMessage = new NotificationMessage("%s moved.".formatted(authData.getUsername()));
+                } else if (gameData.getGame().isInCheck(opponentColor)) {
+                    notificationMessage = new NotificationMessage("%s moved. %s in check.".formatted(authData.getUsername(),
+                            opponentColor.toString()));
                     connections.broadcast(gameID, null, notificationMessage);
                 }
                 Service.GameService.gameDAO.updateGame(gameData);
