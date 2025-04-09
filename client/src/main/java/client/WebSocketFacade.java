@@ -44,21 +44,9 @@ public class WebSocketFacade extends Endpoint {
                         String messageType = jsonObject.get("serverMessageType").getAsString();
 
                         switch (messageType) {
-                            case "NOTIFICATION" -> {
-                                NotificationMessage notif = new Gson().fromJson(message, NotificationMessage.class);
-                                notificationHandler.notify(notif);
-                            }
-                            case "ERROR" -> {
-                                ErrorMessage error = new Gson().fromJson(message, ErrorMessage.class);
-                                notificationHandler.notify(error);
-                            }
-                            case "LOAD_GAME" -> {
-                                LoadGameMessage loadGame = new Gson().fromJson(message, LoadGameMessage.class);
-                                ChessGame game = loadGame.getGame();
-                                state.setGame(game);
-                                printBoard(playerColor, game, null);
-                                notificationHandler.notify(loadGame);
-                            }
+                            case "NOTIFICATION" -> handleNotificationMessage(message);
+                            case "ERROR" -> handleErrorMessage(message);
+                            case "LOAD_GAME" -> handleLoadGameMessage(message);
                         }
                     } catch (Exception e) {
                         System.err.println("Error in onMessage: " + e.getMessage());
@@ -73,6 +61,24 @@ public class WebSocketFacade extends Endpoint {
 
     @Override
     public void onOpen(Session session, EndpointConfig endpointConfig) {}
+
+    private void handleNotificationMessage(String message) {
+        NotificationMessage notif = new Gson().fromJson(message, NotificationMessage.class);
+        notificationHandler.notify(notif);
+    }
+
+    private void handleErrorMessage(String message) {
+        ErrorMessage error = new Gson().fromJson(message, ErrorMessage.class);
+        notificationHandler.notify(error);
+    }
+
+    private void handleLoadGameMessage(String message) {
+        LoadGameMessage loadGame = new Gson().fromJson(message, LoadGameMessage.class);
+        ChessGame game = loadGame.getGame();
+        state.setGame(game);
+        printBoard(playerColor, game, null);
+        notificationHandler.notify(loadGame);
+    }
 
     public void connect(String authToken, int gameID, String playerColor) throws ResponseException {
         try {

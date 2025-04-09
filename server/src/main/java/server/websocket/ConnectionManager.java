@@ -21,7 +21,8 @@ public class ConnectionManager {
         connections.remove(authToken);
     }
 
-    public void broadcast(int gameID, String excludeAuthToken, ServerMessage serverMessage) throws IOException {        var removeList = new ArrayList<Connection>();
+    public void broadcast(int gameID, String excludeAuthToken, ServerMessage serverMessage) throws IOException {
+        var removeList = new ArrayList<Connection>();
         for (var c : connections.values()) {
             if (c.session.isOpen()) {
                 if (c.getGameID() == gameID && !c.authToken.equals(excludeAuthToken)) {

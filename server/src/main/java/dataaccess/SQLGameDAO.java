@@ -39,10 +39,7 @@ public class SQLGameDAO extends SQLDAO implements GameDAO {
                         var blackUsername = rs.getString("blackUsername");
                         var gameName = rs.getString("gameName");
                         var json = rs.getString("game");
-                        var chessGame = new Gson().fromJson(json, ChessGame.class);
-                        if (chessGame == null) {
-                            chessGame = new ChessGame();
-                        }
+                        var chessGame = deserializeGame(json);
                         list.add(new GameData(gameID, whiteUsername, blackUsername,gameName, chessGame));
                     }
                 }
@@ -52,6 +49,16 @@ public class SQLGameDAO extends SQLDAO implements GameDAO {
         }
         return list;
     }
+
+
+    private ChessGame deserializeGame(String json) {
+        ChessGame chessGame = new Gson().fromJson(json, ChessGame.class);
+        if (chessGame == null) {
+            chessGame = new ChessGame();
+        }
+        return chessGame;
+    }
+
 
     @Override
     public void addGame(GameData gameData) throws DataAccessException {
@@ -83,10 +90,7 @@ public class SQLGameDAO extends SQLDAO implements GameDAO {
                         var black = rs.getString("blackUsername");
                         var gameName = rs.getString("gameName");
                         var json = rs.getString("game");
-                        var chessGame = new Gson().fromJson(json, ChessGame.class);
-                        if (chessGame == null){
-                            chessGame = new ChessGame();
-                        }
+                        var chessGame = deserializeGame(json);
                         return new GameData(gameID, white, black, gameName, chessGame);
                     }
                 }
