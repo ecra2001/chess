@@ -98,7 +98,7 @@ public class PostLoginUI {
                 state.setGameID(gameSelection.getGameID());
                 state.setInGame(true);
                 facade.joinGame(state.getAuthToken(), gameSelection.getGameID(), color);
-                return "\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN;
+                return "";
             } catch (ResponseException e) {
                 throw new DataFormatException("Failed to join: Either color taken or game no longer exists.");
             }
@@ -119,7 +119,7 @@ public class PostLoginUI {
             ws.connect(state.getAuthToken(), gameSelection.getGameID(), null);
             state.setGameID(gameSelection.getGameID());
             state.setInGame(true);
-            return "\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN;
+            return "";
         } else {
             throw new ResponseException(400, "Expected: observe <ID>");
         }

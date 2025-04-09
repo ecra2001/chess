@@ -57,6 +57,10 @@ public class GameplayUI {
             }
         }
 
+        if (color == null) {
+            color = "white";
+        }
+
         if (color.equalsIgnoreCase("BLACK")) {
             board.append(letterRow("black"));
             for (int i = 1; i < 9; i++) {
