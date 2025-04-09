@@ -225,7 +225,7 @@ public class GameplayUI {
                 printBoard(ws.getPlayerColor(), game, position);
                 return "\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN;
             } else {
-                return "Please provide valid coordinates (i.e. 'b3')";
+                return "Please provide valid coordinates (i.e. 'b3')\n";
             }
         } else {
             throw new ResponseException(400, "Expected: highlight <[a-h][1-8]>");

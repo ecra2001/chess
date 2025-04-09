@@ -87,7 +87,7 @@ public class PostLoginUI {
             }
             GameData gameSelection = games.get(gameNumber);
             try {
-
+                System.out.println("Joining game...");
                 ws = new WebSocketFacade(serverUrl, notificationHandler);
                 state.setGame(gameSelection.getGame());
                 state.setWebSocket(ws);
@@ -95,7 +95,7 @@ public class PostLoginUI {
                 state.setGameID(gameSelection.getGameID());
                 state.setInGame(true);
                 facade.joinGame(state.getAuthToken(), gameSelection.getGameID(), color);
-                return "joined game\n";
+                return "";
             } catch (ResponseException e) {
                 throw new DataFormatException("Failed to join: Either color taken or game no longer exists.");
             }
@@ -111,6 +111,7 @@ public class PostLoginUI {
                 return "Game doesn't exist. Enter 'list' to see full list of games";
             }
             GameData gameSelection = allGames.get(gameNum);
+            System.out.println("Observing game...");
             ws = new WebSocketFacade(serverUrl, notificationHandler);
             ws.connect(state.getAuthToken(), gameSelection.getGameID(), null);
             state.setGameID(gameSelection.getGameID());
