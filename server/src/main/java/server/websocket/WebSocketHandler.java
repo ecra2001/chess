@@ -110,7 +110,13 @@ public class WebSocketHandler {
                 gameData.getGame().makeMove(move);
                 var loadGameMessage = new LoadGameMessage(gameData.getGame());
                 connections.broadcast(gameID, null, loadGameMessage);
-                NotificationMessage notificationMessage = new NotificationMessage("%s moved %s to %s.".formatted(authData.getUsername(), move.getStartPosition(), move.getEndPosition()));
+                int startRow = move.getStartPosition().getRow();
+                int startCol = move.getStartPosition().getColumn();
+                int endRow = move.getEndPosition().getRow();
+                int endCol = move.getEndPosition().getColumn();
+                String start = "%s%d".formatted((char)('a' + startCol - 1), startRow);
+                String end = "%s%d".formatted((char)('a' + endCol - 1), endRow);
+                NotificationMessage notificationMessage = new NotificationMessage("%s moved %s to %s.".formatted(authData.getUsername(), start, end));
                 connections.broadcast(gameID, authToken, notificationMessage);
                 if (gameData.getGame().isInCheckmate(opponentColor)) {
                     gameData.getGame().setGameOver(true);
