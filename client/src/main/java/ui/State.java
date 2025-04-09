@@ -107,11 +107,9 @@ public class State implements NotificationHandler{
 
     @Override
     public void notify(ServerMessage notification) {
-        if (notification instanceof NotificationMessage) {
-            NotificationMessage notif = (NotificationMessage) notification;
+        if (notification instanceof NotificationMessage notif) {
             System.out.println(SET_TEXT_COLOR_YELLOW + notif.getMessage());
-        } else if (notification instanceof ErrorMessage) {
-            ErrorMessage error = (ErrorMessage) notification;
+        } else if (notification instanceof ErrorMessage error) {
             System.out.println(SET_TEXT_COLOR_RED + error.getErrorMessage());
         }
         System.out.print("\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN);
