@@ -259,7 +259,9 @@ public class GameplayUI {
     }
 
     public String help() {
-        return """
+        System.out.print(
+                SET_TEXT_COLOR_BLUE +
+                """
                 redraw
                 move <[a-h][1-8]> <[a-h][1-8]>
                 highlight <[a-h][1-8]>
@@ -267,6 +269,8 @@ public class GameplayUI {
                 leave
                 quit
                 help
-                """;
+                """
+        );
+        return "\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN;
     }
 }
