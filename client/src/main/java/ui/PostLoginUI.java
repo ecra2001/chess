@@ -88,7 +88,7 @@ public class PostLoginUI {
             GameData gameSelection = games.get(gameNumber);
             try {
                 System.out.println("Joining game...");
-                ws = new WebSocketFacade(serverUrl, notificationHandler);
+                ws = new WebSocketFacade(serverUrl, notificationHandler, state);
                 state.setGame(gameSelection.getGame());
                 state.setWebSocket(ws);
                 ws.connect(state.getAuthToken(), gameSelection.getGameID(), color);
@@ -112,7 +112,7 @@ public class PostLoginUI {
             }
             GameData gameSelection = allGames.get(gameNum);
             System.out.println("Observing game...");
-            ws = new WebSocketFacade(serverUrl, notificationHandler);
+            ws = new WebSocketFacade(serverUrl, notificationHandler, state);
             ws.connect(state.getAuthToken(), gameSelection.getGameID(), null);
             state.setGameID(gameSelection.getGameID());
             state.setInGame(true);

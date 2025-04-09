@@ -5,6 +5,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import ui.GameplayUI;
+import ui.State;
 import websocket.messages.*;
 import websocket.commands.*;
 import exception.ResponseException;
@@ -24,9 +25,11 @@ public class WebSocketFacade extends Endpoint {
     public String getPlayerColor() {
         return playerColor;
     }
+    private final State state;
 
-    public WebSocketFacade(String url, NotificationHandler notificationHandler) throws ResponseException {
+    public WebSocketFacade(String url, NotificationHandler notificationHandler, State state) throws ResponseException {
         try {
+            this.state = state;
             url = url.replace("http", "ws");
             URI socketURI = new URI(url + "/ws");
             this.notificationHandler = notificationHandler;
@@ -52,6 +55,7 @@ public class WebSocketFacade extends Endpoint {
                             case "LOAD_GAME" -> {
                                 LoadGameMessage loadGame = new Gson().fromJson(message, LoadGameMessage.class);
                                 ChessGame game = loadGame.getGame();
+                                state.setGame(game);
                                 printBoard(playerColor, game, null);
                                 System.out.print("\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN);
                             }
