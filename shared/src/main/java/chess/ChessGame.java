@@ -105,11 +105,16 @@ public class ChessGame {
             throw new InvalidMoveException("Not team's turn");
         }
         Collection<ChessMove> validMoves = validMoves(move.getStartPosition());
-        if (validMoves == null || isInCheck(teamTurn) || !validMoves.contains(move)) {
+        if (validMoves == null || !validMoves.contains(move)) {
             throw new InvalidMoveException("Invalid move");
         }
         board.addPiece(move.getEndPosition(), piece);
         board.addPiece(move.getStartPosition(), null);
+        if (isInCheck(teamTurn)) {
+            board.addPiece(move.getEndPosition(), null);
+            board.addPiece(move.getStartPosition(), piece);
+            throw new InvalidMoveException("Invalid move");
+        }
         if (piece.getPieceType() == ChessPiece.PieceType.PAWN) {
             int promotionRow = (piece.getTeamColor() == TeamColor.WHITE) ? 8 : 1;
             if (move.getEndPosition().getRow() == promotionRow) {
