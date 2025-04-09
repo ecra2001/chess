@@ -166,8 +166,8 @@ public class GameplayUI {
             String from = params[0].toLowerCase();
             String to = params[1].toLowerCase();
 
-            ChessPosition oldPos = null;
-            ChessPosition newPos = null;
+            ChessPosition oldPos;
+            ChessPosition newPos;
 
             if (from.length() == 2 && from.charAt(0) >= 'a' && from.charAt(0) <= 'h' &&
                     from.charAt(1) >= '1' && from.charAt(1) <= '8') {
@@ -175,7 +175,8 @@ public class GameplayUI {
                 int col = from.charAt(0) - 'a' + 1;
                 oldPos = new ChessPosition(row, col);
             } else {
-                return "Please provide valid start position coordinates (i.e. 'b3')";
+                System.out.print("Please provide valid start position coordinates (i.e. 'b3')");
+                return "\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN;
             }
 
             if (to.length() == 2 && to.charAt(0) >= 'a' && to.charAt(0) <= 'h' &&
@@ -184,7 +185,8 @@ public class GameplayUI {
                 int col = to.charAt(0) - 'a' + 1;
                 newPos = new ChessPosition(row, col);
             } else {
-                return "Please provide valid end position coordinates (i.e. 'b3')";
+                System.out.print("Please provide valid end position coordinates (i.e. 'b3')");
+                return "\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN;
             }
 
             ChessPiece.PieceType promotion = null;
@@ -196,7 +198,8 @@ public class GameplayUI {
                     case "ROOK" -> promotion = ChessPiece.PieceType.ROOK;
                     case "PAWN" -> promotion = ChessPiece.PieceType.PAWN;
                     default -> {
-                        return "Please provide valid promotion piece (i.e. 'queen')";
+                        System.out.println("Please provide valid promotion piece (i.e. 'queen')");
+                        return "\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN;
                     }
                 }
             }
@@ -225,7 +228,8 @@ public class GameplayUI {
                 printBoard(ws.getPlayerColor(), game, position);
                 return "\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN;
             } else {
-                return "Please provide valid coordinates (i.e. 'b3')\n";
+                System.out.print("Please provide valid coordinates (i.e. 'b3')");
+                return "\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN;
             }
         } else {
             throw new ResponseException(400, "Expected: highlight <[a-h][1-8]>");
