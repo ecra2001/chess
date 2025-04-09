@@ -247,7 +247,7 @@ public class GameplayUI {
             ws.resign(state.getAuthToken(), state.getGameID());
             return "";
         } else if (line.equalsIgnoreCase("NO")) {
-            return "";
+            return "\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN;
         }
         throw new ResponseException(400, "Expected: [YES|NO]");
     }
