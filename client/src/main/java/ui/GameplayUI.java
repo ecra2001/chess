@@ -274,7 +274,7 @@ public class GameplayUI {
                 SET_TEXT_COLOR_BLUE +
                 """
                 redraw
-                move <[a-h][1-8]> <[a-h][1-8]>
+                move <[a-h][1-8]> <[a-h][1-8] [PROMOTION]>
                 highlight <[a-h][1-8]>
                 resign
                 leave
