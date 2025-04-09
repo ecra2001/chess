@@ -116,6 +116,7 @@ public class PostLoginUI {
             GameData gameSelection = allGames.get(gameNum);
             System.out.println("Observing game...");
             ws = new WebSocketFacade(serverUrl, notificationHandler, state);
+            state.setWebSocket(ws);
             ws.connect(state.getAuthToken(), gameSelection.getGameID(), null);
             state.setGameID(gameSelection.getGameID());
             state.setInGame(true);
