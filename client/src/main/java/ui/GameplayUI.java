@@ -48,7 +48,7 @@ public class GameplayUI {
 
     public static void printBoard(String color, ChessGame game, ChessPosition selectedPos) {
         var board = new StringBuilder();
-
+        board.append("\n");
         Collection<ChessMove> possibleMoves = selectedPos != null ? game.validMoves(selectedPos) : null;
         HashSet<ChessPosition> possibleSquares = new HashSet<>(possibleMoves != null ? possibleMoves.size() : 0);
         if (possibleMoves != null) {

@@ -91,13 +91,13 @@ public class PostLoginUI {
             GameData gameSelection = games.get(gameNumber);
             try {
                 System.out.println("Joining game...");
+                facade.joinGame(state.getAuthToken(), gameSelection.getGameID(), color);
                 ws = new WebSocketFacade(serverUrl, notificationHandler, state);
                 state.setGame(gameSelection.getGame());
                 state.setWebSocket(ws);
                 ws.connect(state.getAuthToken(), gameSelection.getGameID(), color);
                 state.setGameID(gameSelection.getGameID());
                 state.setInGame(true);
-                facade.joinGame(state.getAuthToken(), gameSelection.getGameID(), color);
                 return "";
             } catch (ResponseException e) {
                 throw new DataFormatException("Failed to join: Either color taken or game no longer exists.");
