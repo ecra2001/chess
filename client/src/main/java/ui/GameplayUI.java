@@ -1,6 +1,7 @@
 package ui;
 import chess.*;
-import java.util.Arrays;
+
+import java.util.*;
 import java.util.zip.DataFormatException;
 
 import client.NotificationHandler;
@@ -9,9 +10,6 @@ import com.google.gson.Gson;
 import model.*;
 import exception.ResponseException;
 import client.ServerFacade;
-import java.util.Objects;
-import java.util.Collection;
-import java.util.HashSet;
 
 import static ui.EscapeSequences.*;
 public class GameplayUI {
@@ -240,8 +238,18 @@ public class GameplayUI {
         }
     }
 
-    public String resign() {
-        return null;
+    public String resign() throws ResponseException {
+        System.out.println("Are you sure? [YES|NO]");
+        Scanner scanner = new Scanner(System.in);
+        String line = scanner.nextLine();
+        if (line.equalsIgnoreCase("YES")) {
+            ws = state.getWebSocket();
+            ws.resign(state.getAuthToken(), state.getGameID());
+            return "";
+        } else if (line.equalsIgnoreCase("NO")) {
+            return "";
+        }
+        throw new ResponseException(400, "Expected: [YES|NO]");
     }
 
     public String redraw() {
