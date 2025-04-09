@@ -14,6 +14,7 @@ import websocket.messages.*;
 import websocket.commands.*;
 
 import java.io.IOException;
+import java.util.Objects;
 
 @WebSocket
 public class WebSocketHandler {
@@ -65,10 +66,20 @@ public class WebSocketHandler {
             sendError(session, new ErrorMessage("Error: Bad gameID"));
         }
         connections.add(authToken, session, gameID);
+        assert game != null;
         var loadGameMessage = new LoadGameMessage(game.getGame());
         session.getRemote().sendString(new Gson().toJson(loadGameMessage));
 
-        NotificationMessage notificationMessage = new NotificationMessage("%s has joined game".formatted(authData.getUsername()));
+        String joinedAs;
+        if (Objects.equals(authData.getUsername(), game.getWhiteUsername())) {
+            joinedAs = "white";
+        } else if (Objects.equals(authData.getUsername(), game.getBlackUsername())) {
+            joinedAs = "black";
+        } else {
+            joinedAs = "observer";
+        }
+
+        NotificationMessage notificationMessage = new NotificationMessage("%s has joined game as %s".formatted(authData.getUsername(), joinedAs));
         connections.broadcast(gameID, authToken, notificationMessage);
     }
 
@@ -101,17 +112,18 @@ public class WebSocketHandler {
                 connections.broadcast(gameID, null, loadGameMessage);
                 if (gameData.getGame().isInCheckmate(opponentColor)) {
                     gameData.getGame().setGameOver(true);
-                    NotificationMessage notificationMessage = new NotificationMessage("Checkmate! %s wins.".formatted(color));
+                    NotificationMessage notificationMessage = new NotificationMessage("Checkmate! %s wins.".formatted(authData.getUsername()));
                     connections.broadcast(gameID, authToken, notificationMessage);
                 } else if (gameData.getGame().isInStalemate(opponentColor)) {
                     gameData.getGame().setGameOver(true);
                     NotificationMessage notificationMessage = new NotificationMessage("Stalemate! Tied game.");
                     connections.broadcast(gameID, authToken, notificationMessage);
                 } else if (gameData.getGame().isInCheck(opponentColor)) {
-                    NotificationMessage notificationMessage = new NotificationMessage("%s in check.".formatted(opponentColor));
+                    NotificationMessage notificationMessage =
+                            new NotificationMessage("%s moved. %s in check.".formatted(authData.getUsername(), opponentColor.toString()));
                     connections.broadcast(gameID, authToken, notificationMessage);
                 } else {
-                    NotificationMessage notificationMessage = new NotificationMessage("%s moved.".formatted(color));
+                    NotificationMessage notificationMessage = new NotificationMessage("%s moved.".formatted(authData.getUsername()));
                     connections.broadcast(gameID, authToken, notificationMessage);
                 }
                 Service.GameService.gameDAO.updateGame(gameData);
@@ -135,7 +147,7 @@ public class WebSocketHandler {
             gameData = new GameData(gameData.getGameID(), gameData.getWhiteUsername(), null, gameData.getGameName(), gameData.getGame());
         }
         Service.GameService.gameDAO.updateGame(gameData);
-        NotificationMessage notificationMessage = new NotificationMessage("User has left game");
+        NotificationMessage notificationMessage = new NotificationMessage("%s has left game".formatted(authData.getUsername()));
         connections.broadcast(gameID, authToken, notificationMessage);
     }
 
@@ -157,7 +169,7 @@ public class WebSocketHandler {
         }
         gameData.getGame().setGameOver(true);
         Service.GameService.gameDAO.updateGame(gameData);
-        NotificationMessage notificationMessage = new NotificationMessage("Player has forfeited");
+        NotificationMessage notificationMessage = new NotificationMessage("%s has forfeited".formatted(authData.getUsername()));
         connections.broadcast(gameID, null, notificationMessage);
     }
 
