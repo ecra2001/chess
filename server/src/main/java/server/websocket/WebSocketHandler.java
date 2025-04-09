@@ -121,10 +121,10 @@ public class WebSocketHandler {
                 } else if (gameData.getGame().isInCheck(opponentColor)) {
                     NotificationMessage notificationMessage =
                             new NotificationMessage("%s moved. %s in check.".formatted(authData.getUsername(), opponentColor.toString()));
-                    connections.broadcast(gameID, authToken, notificationMessage);
+                    connections.broadcast(gameID, null, notificationMessage);
                 } else {
                     NotificationMessage notificationMessage = new NotificationMessage("%s moved.".formatted(authData.getUsername()));
-                    connections.broadcast(gameID, authToken, notificationMessage);
+                    connections.broadcast(gameID, null, notificationMessage);
                 }
                 Service.GameService.gameDAO.updateGame(gameData);
             }

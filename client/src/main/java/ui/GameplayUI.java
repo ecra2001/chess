@@ -251,7 +251,7 @@ public class GameplayUI {
         ws = state.getWebSocket();
         ws.leave(state.getAuthToken(), state.getGameID());
         state.setInGame(false);
-        return "left game";
+        return "You have left the game";
     }
 
     public String help() {

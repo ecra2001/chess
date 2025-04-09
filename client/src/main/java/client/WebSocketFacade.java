@@ -57,7 +57,7 @@ public class WebSocketFacade extends Endpoint {
                                 ChessGame game = loadGame.getGame();
                                 state.setGame(game);
                                 printBoard(playerColor, game, null);
-                                System.out.print("\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN);
+                                notificationHandler.notify(loadGame);
                             }
                         }
                     } catch (Exception e) {
