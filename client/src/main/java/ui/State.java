@@ -110,10 +110,11 @@ public class State implements NotificationHandler{
         if (notification instanceof NotificationMessage) {
             NotificationMessage notif = (NotificationMessage) notification;
             System.out.println(SET_TEXT_COLOR_YELLOW + notif.getMessage());
+            System.out.print("\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN);
         } else if (notification instanceof ErrorMessage) {
             ErrorMessage error = (ErrorMessage) notification;
             System.out.println(SET_TEXT_COLOR_RED + error.getErrorMessage());
+            System.out.print("\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN);
         }
-        System.out.print("\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN);
     }
 }

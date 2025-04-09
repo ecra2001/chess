@@ -10,6 +10,9 @@ import exception.ResponseException;
 import client.ServerFacade;
 import chess.*;
 
+import static ui.EscapeSequences.SET_TEXT_COLOR_GREEN;
+import static ui.EscapeSequences.SET_TEXT_COLOR_MAGENTA;
+
 public class PostLoginUI {
     ServerFacade facade;
     private final String serverUrl;
@@ -95,7 +98,7 @@ public class PostLoginUI {
                 state.setGameID(gameSelection.getGameID());
                 state.setInGame(true);
                 facade.joinGame(state.getAuthToken(), gameSelection.getGameID(), color);
-                return "";
+                return "\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN;
             } catch (ResponseException e) {
                 throw new DataFormatException("Failed to join: Either color taken or game no longer exists.");
             }
@@ -116,7 +119,7 @@ public class PostLoginUI {
             ws.connect(state.getAuthToken(), gameSelection.getGameID(), null);
             state.setGameID(gameSelection.getGameID());
             state.setInGame(true);
-            return "observing game\n";
+            return "\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN;
         } else {
             throw new ResponseException(400, "Expected: observe <ID>");
         }
