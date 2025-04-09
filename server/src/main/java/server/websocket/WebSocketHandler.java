@@ -113,7 +113,7 @@ public class WebSocketHandler {
                 if (gameData.getGame().isInCheckmate(opponentColor)) {
                     gameData.getGame().setGameOver(true);
                     NotificationMessage notificationMessage = new NotificationMessage("Checkmate! %s wins.".formatted(authData.getUsername()));
-                    connections.broadcast(gameID, authToken, notificationMessage);
+                    connections.broadcast(gameID, null, notificationMessage);
                 } else if (gameData.getGame().isInStalemate(opponentColor)) {
                     gameData.getGame().setGameOver(true);
                     NotificationMessage notificationMessage = new NotificationMessage("Stalemate! Tied game.");
