@@ -15,6 +15,7 @@ import java.net.URISyntaxException;
 
 import static ui.EscapeSequences.SET_TEXT_COLOR_GREEN;
 import static ui.EscapeSequences.SET_TEXT_COLOR_MAGENTA;
+import static ui.GameplayUI.printBoard;
 
 public class WebSocketFacade extends Endpoint {
     Session session;
@@ -32,29 +33,32 @@ public class WebSocketFacade extends Endpoint {
 
             WebSocketContainer container = ContainerProvider.getWebSocketContainer();
             this.session = container.connectToServer(this, socketURI);
-
             this.session.addMessageHandler(new MessageHandler.Whole<String>() {
                 @Override
                 public void onMessage(String message) {
-                    JsonObject jsonObject = JsonParser.parseString(message).getAsJsonObject();
-                    String messageType = jsonObject.get("serverMessageType").getAsString();
+                    try {
+                        JsonObject jsonObject = JsonParser.parseString(message).getAsJsonObject();
+                        String messageType = jsonObject.get("serverMessageType").getAsString();
 
-                    switch (messageType) {
-                        case "NOTIFICATION" -> {
-                            NotificationMessage notif = new Gson().fromJson(message, NotificationMessage.class);
-                            notificationHandler.notify(notif);
+                        switch (messageType) {
+                            case "NOTIFICATION" -> {
+                                NotificationMessage notif = new Gson().fromJson(message, NotificationMessage.class);
+                                notificationHandler.notify(notif);
+                            }
+                            case "ERROR" -> {
+                                ErrorMessage error = new Gson().fromJson(message, ErrorMessage.class);
+                                notificationHandler.notify(error);
+                            }
+                            case "LOAD_GAME" -> {
+                                LoadGameMessage loadGame = new Gson().fromJson(message, LoadGameMessage.class);
+                                ChessGame game = loadGame.getGame();
+                                printBoard(playerColor, game, null);
+                                System.out.print("\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN);
+                            }
                         }
-                        case "ERROR" -> {
-                            ErrorMessage error = new Gson().fromJson(message, ErrorMessage.class);
-                            notificationHandler.notify(error);
-                        }
-                        case "LOAD_GAME" -> {
-                            LoadGameMessage loadGame = new Gson().fromJson(message, LoadGameMessage.class);
-                            ChessGame game = loadGame.getGame();
-                            GameplayUI.printBoard(playerColor, game, null);
-                            notificationHandler.notify(loadGame);
-                            System.out.print("\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN);
-                        }
+                    } catch (Exception e) {
+                        System.err.println("Error in onMessage: " + e.getMessage());
+                        e.printStackTrace();
                     }
                 }
             });

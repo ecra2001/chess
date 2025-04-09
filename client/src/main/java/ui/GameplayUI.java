@@ -204,7 +204,7 @@ public class GameplayUI {
             ChessMove chessMove = new ChessMove(oldPos, newPos, promotion);
             ws = state.getWebSocket();
             ws.makeMove(state.getAuthToken(), state.getGameID(), chessMove);
-            return "\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN;
+            return "";
         } else {
             throw new ResponseException(400, "Expected: move <[a-h][1-8]> <[a-h][1-8]> <promotion>\n");
         }
