@@ -211,7 +211,8 @@ public class GameplayUI {
             ws.makeMove(state.getAuthToken(), state.getGameID(), chessMove);
             return "";
         } else {
-            throw new ResponseException(400, "Expected: move <[a-h][1-8]> <[a-h][1-8]> <promotion>\n");
+            throw new ResponseException(400, "Expected: move <[a-h][1-8]> <[a-h][1-8]> <promotion>\n" +
+                    SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN);
         }
     }
 
@@ -234,7 +235,8 @@ public class GameplayUI {
                 return "\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN;
             }
         } else {
-            throw new ResponseException(400, "Expected: highlight <[a-h][1-8]>");
+            throw new ResponseException(400, "Expected: highlight <[a-h][1-8]>\n" +
+                    SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN);
         }
     }
 
@@ -249,7 +251,8 @@ public class GameplayUI {
         } else if (line.equalsIgnoreCase("NO")) {
             return "\n" + SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN;
         }
-        throw new ResponseException(400, "Expected: [YES|NO]");
+        throw new ResponseException(400, "Expected: [YES|NO]\n" +
+                SET_TEXT_COLOR_MAGENTA + "[IN_GAME] >>> " + SET_TEXT_COLOR_GREEN);
     }
 
     public String redraw() {
